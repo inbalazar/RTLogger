@@ -1,0 +1,8 @@
+C:\Users\inbalazar\source\repos\RTLogger\LoggerDisplay\obj\Debug\LoggerDisplay.Properties.Resources.resources
+C:\Users\inbalazar\source\repos\RTLogger\LoggerDisplay\obj\Debug\LoggerDisplay.csproj.GenerateResource.cache
+C:\Users\inbalazar\source\repos\RTLogger\LoggerDisplay\bin\Debug\LoggerDisplay.exe.config
+C:\Users\inbalazar\source\repos\RTLogger\LoggerDisplay\bin\Debug\LoggerDisplay.exe
+C:\Users\inbalazar\source\repos\RTLogger\LoggerDisplay\bin\Debug\LoggerDisplay.pdb
+C:\Users\inbalazar\source\repos\RTLogger\LoggerDisplay\obj\Debug\LoggerDisplay.exe
+C:\Users\inbalazar\source\repos\RTLogger\LoggerDisplay\obj\Debug\LoggerDisplay.pdb
+C:\Users\inbalazar\source\repos\RTLogger\LoggerDisplay\obj\Debug\LoggerDisplay.csprojAssemblyReference.cache

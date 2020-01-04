@@ -1,0 +1,3 @@
+﻿  LoggerMgr.cpp
+C:\Users\inbalazar\source\repos\RTLogger\RTLogger\LoggerMgr.cpp(110,23): warning C4018: '<': signed/unsigned mismatch
+  RTLogger.vcxproj -> C:\Users\inbalazar\source\repos\RTLogger\Debug\CCU.exe
