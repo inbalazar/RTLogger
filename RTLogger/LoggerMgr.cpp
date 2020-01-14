@@ -9,11 +9,11 @@ LoggerMgr::LoggerMgr()
 {
 	for (int i = 0; i < sizeof(m_stArrLoggerRTData) / sizeof(LoggerRTData); i++)
 	{
-		m_stArrLoggerRTData[i].queueMsgs= createQueue(1000);
+		m_stArrLoggerRTData[i].queueMsgs = createQueue(1000);
 	}
 }
 
-LoggerMgr::queue* LoggerMgr::createQueue(int maxSize) 
+LoggerMgr::queue* LoggerMgr::createQueue(int maxSize)
 {
 	queue* q = new queue[sizeof(queue)];
 	q->head = 0;
@@ -28,17 +28,17 @@ LoggerMgr::queue* LoggerMgr::createQueue(int maxSize)
 	return q;
 }
 
-void LoggerMgr::freeQueue(queue* q) 
+void LoggerMgr::freeQueue(queue* q)
 {
-	delete []q->msgsElements.textMsg;
-	delete []q->msgsElements.severityMsg;
-	delete []q;
+	delete[]q->msgsElements.textMsg;
+	delete[]q->msgsElements.severityMsg;
+	delete[]q;
 }
 
-int LoggerMgr::enqueue(queue* q, char* element, LoggerRTSeverity eSeverity) 
+int LoggerMgr::enqueue(queue* q, char* element, LoggerRTSeverity eSeverity)
 {
 	int nextTail = (q->tail + 1) % q->maxSize;
-	if (nextTail == q->head) 
+	if (nextTail == q->head)
 	{
 		return -1;
 	}
@@ -52,7 +52,7 @@ int LoggerMgr::enqueue(queue* q, char* element, LoggerRTSeverity eSeverity)
 	return 1;
 }
 
-char* LoggerMgr::dequeue(LoggerMgr::queue* q) 
+char* LoggerMgr::dequeue(LoggerMgr::queue* q)
 {
 	if (q->head == q->tail) {
 		return NULL;
@@ -63,7 +63,7 @@ char* LoggerMgr::dequeue(LoggerMgr::queue* q)
 	return &q->msgsElements.textMsg[head * MAX_ELEMENT_SIZE];
 }
 
-unsigned int LoggerMgr::count(LoggerMgr::queue* q) 
+unsigned int LoggerMgr::count(LoggerMgr::queue* q)
 {
 	if (q->head <= q->tail) {
 		return q->tail - q->head;
@@ -81,14 +81,14 @@ LoggerMgr* LoggerMgr::GetInstance()
 	}
 	return m_pclInstance;
 }
- 
+
 
 void LoggerMgr::init()
 {
 	//
 }
 
-void LoggerMgr::sendToLoggerDisplay(char* msg) 
+void LoggerMgr::sendToLoggerDisplay(char* msg)
 {
 	char ipAdress[] = "127.0.0.1";
 	DatagramSocket* s = new DatagramSocket(5001, ipAdress, TRUE, TRUE);
@@ -104,16 +104,16 @@ void LoggerMgr::startProcess()
 		{
 			//printf(" !%d", count(m_stArrLoggerRTData[i].queueMsgs));
 			//printf("\nsize: %d",sizeof(m_stArrLoggerRTData) / sizeof(LoggerRTData));
-			
+
 			if (count(m_stArrLoggerRTData[i].queueMsgs) != 0)
 			{
 				for (int j = 0; j < count(m_stArrLoggerRTData[i].queueMsgs); j++)
 				{
-					char* msg = 
+					char* msg =
 						&m_stArrLoggerRTData[i].queueMsgs->msgsElements.textMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
-					LoggerRTSeverity severity = 
+					LoggerRTSeverity severity =
 						m_stArrLoggerRTData[i].queueMsgs->msgsElements.severityMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
-					
+
 					element stElement;// move to h file
 					stElement.textMsg = msg;
 					stElement.severityMsg = &severity;
@@ -122,24 +122,22 @@ void LoggerMgr::startProcess()
 					stDataSend.elementMsg = stElement;
 					stDataSend.deviceMsg = m_stArrLoggerRTData[i].eLoggerRTDivece;
 
-					if (msg != NULL||msg!="")
+					if (msg != NULL || msg != "")
 					{
-						sendToLoggerDisplay((char*)(&stDataSend)); //need to send struct
+						sendToLoggerDisplay(msg); //need to send struct
 					}
 					else
 					{
 						//do nothing
 					}
 					char* msg2 = dequeue(m_stArrLoggerRTData[i].queueMsgs); //remove return
-					/*printf("\ndequeue: %s, count: %d\n", msg, count(m_stArrLoggerRTData[i].queueMsgs));
-					printf("\ndequeue: %s, severity: %s\n", msg, LoggerRTSeverityStr[severity]);*/
 
 					printf("\ndequeue: %s, count: %d\n", stDataSend.elementMsg.textMsg, count(m_stArrLoggerRTData[i].queueMsgs));
 					printf("\ndequeue: %s, severity: %s\n", stElement.textMsg, LoggerRTSeverityStr[*stDataSend.elementMsg.severityMsg]);
 					printf("\ndequeue: %s, device: %s\n", stElement.textMsg, LoggerRTDiveceStr[stDataSend.deviceMsg]);
 				}
 			}
-			
+
 		}
 	}
 }
@@ -152,6 +150,6 @@ LoggerMgr::stLoggerRTData* LoggerMgr::registerDevice(const char* deviceName)
 		return &m_stArrLoggerRTData[LoggerRTCcu];
 	}
 	//else if -need to add
-	
+
 	return NULL;
 }
