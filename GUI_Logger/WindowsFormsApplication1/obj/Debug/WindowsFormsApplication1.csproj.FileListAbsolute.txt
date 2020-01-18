@@ -115,3 +115,6 @@ C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\obj
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.exe
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.pdb
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\obj\Debug\WindowsFormsApplication1.csprojAssemblyReference.cache
+C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\bin\Debug\Microsoft.AnalysisServices.AdomdClient.dll
+C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\bin\Debug\Telerik.Windows.MediaFoundation.dll
+C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\bin\Debug\MediaFoundation.dll

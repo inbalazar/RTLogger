@@ -42,7 +42,7 @@ public:
 	static LoggerMgr* GetInstance();
 	~LoggerMgr() {};
 	void init();
-	void sendToLoggerDisplay(char* msg);
+	void sendToLoggerDisplay(dataSend* msg);
 	void startProcess();
 	stLoggerRTData* registerDevice(const char* deviceName);
 

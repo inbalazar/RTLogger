@@ -35,4 +35,9 @@ typedef struct dataSendStru {
 	LoggerRTDevice deviceMsg;
 } dataSend;
 
+typedef struct udpDataStru {
+	LoggerRTSeverity severityMsg;
+	char textMsg[100];
+} udpData;
+
 #endif // __DATATYPE_H

@@ -21,7 +21,7 @@ int main()
 		log->sendLoggerRTDebug("%d--- time: %s", ++i, cstr);
 		printf("\n%d--- time: %s", i, cstr);
 
-		if (i == 1000)
+		if (i == 3)
 			break;
 		//Sleep(1000);
 

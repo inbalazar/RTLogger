@@ -85,14 +85,21 @@ namespace WindowsFormsApplication1
             IPEndPoint RemoteIP = new IPEndPoint(IPAddress.Any, 60240);
             Byte[] receivd = Client.EndReceive(res, ref RemoteIP);
 
+            var index = 0;
+
+            var severityMsg = (LoggerRTSeverity)BitConverter.ToInt32(receivd, index);
+            index += 4;
+            var endStringIndex = Array.IndexOf(receivd, (byte)0, index); // TODO: make sure > index;
+            var textMsg = Encoding.UTF8.GetString(receivd, index, endStringIndex - index);
+            index = endStringIndex + 1;
             //dataSend stdataSend = (*dataSend)receivd;
 
 
              //var result = fromBytes<Message>(receivd);
 
-            data = Encoding.UTF8.GetString(receivd);
+            //data = Encoding.UTF8.GetString(receivd);
          //   data = ByteArrayToNewStuff(receivd);
-            Console.WriteLine(data);
+            Console.WriteLine(textMsg);
 
             //Console.WriteLine(receivd);
 
@@ -104,7 +111,7 @@ namespace WindowsFormsApplication1
             this.Invoke(new MethodInvoker(delegate {
 
                 //richTextBox1.Text += "\nRecived data: " + data;
-                dt.Rows.Add("0000", "Engine", "CRITICAL", data);
+                dt.Rows.Add("0000", "Engine", severityMsg, textMsg);
                 
                 setColor();
 
@@ -150,13 +157,25 @@ namespace WindowsFormsApplication1
 
 
             dt.Columns.Add("Cycle", typeof(int));
-            dt.Columns.Add("Devices", typeof(string));
+            dt.Columns.Add("Services", typeof(string));
             dt.Columns.Add("Severity", typeof(string));
 
-            dt.Columns.Add("MSG", typeof(string));
+            dt.Columns.Add("Message", typeof(string));
 
             //Type columnType = dt.Columns["MSG"].DataType;
-           
+
+
+            this.dataGridView1.DataSource = dt;
+            this.Controls.Add(this.dataGridView1);
+
+            dataGridView1.Columns[0].Width = 80;
+            dataGridView1.Columns[1].Width = 80;
+            dataGridView1.Columns[2].Width = 80;
+
+            dataGridView1.Columns[0].TextAlignment = ContentAlignment.MiddleLeft;
+
+
+
             reloadTable(dt);
 
            //dataGridView1.CellFormatting += new DataGridViewCellFormattingEventHandler(dataGridView1_CellFormatting);
@@ -180,7 +199,7 @@ namespace WindowsFormsApplication1
                 //Console.WriteLine(textBox1.Text);
                 //Filter datagridview using textbox
                 //Console.WriteLine(textBox1.Text);
-                dv.RowFilter = string.Format("MSG like '%{0}%'", textBox1.Text);
+                dv.RowFilter = string.Format("Message like '%{0}%'", textBox1.Text);
                 dataGridView1.DataSource = dv.ToTable();
                 setColor();
 

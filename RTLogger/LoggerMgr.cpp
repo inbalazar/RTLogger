@@ -88,11 +88,17 @@ void LoggerMgr::init()
 	//
 }
 
-void LoggerMgr::sendToLoggerDisplay(char* msg)
+void LoggerMgr::sendToLoggerDisplay(dataSend* msg)
 {
 	char ipAdress[] = "127.0.0.1";
 	DatagramSocket* s = new DatagramSocket(5001, ipAdress, TRUE, TRUE);
-	s->send(msg, strlen(msg));
+
+	// Change dataToSend to a new type...
+	udpData dataToSend = udpData();
+	//dataToSend.severityMsg = msg->elementMsg.severityMsg;
+	dataToSend.severityMsg = *msg->elementMsg.severityMsg;
+	strncpy(dataToSend.textMsg, msg->elementMsg.textMsg, strlen(msg->elementMsg.textMsg));
+	s->send((char*)&dataToSend, sizeof(dataToSend));
 }
 
 void LoggerMgr::startProcess()
@@ -124,7 +130,7 @@ void LoggerMgr::startProcess()
 
 					if (msg != NULL || msg != "")
 					{
-						sendToLoggerDisplay(msg); //need to send struct
+						sendToLoggerDisplay(&stDataSend); //need to send struct
 					}
 					else
 					{
