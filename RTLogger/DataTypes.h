@@ -6,38 +6,55 @@
 #include <string>
 using namespace std;
 
-enum LoggerRTSeverity
+#define MAX_SIZE_MESSAGE 100
+#define MAX_ELEMENT_SIZE 50 + 1
+#define MAX_MSG_TO_SEND 100
+#define MILLISECONDS_TO_60_HZ 0.0015599
+
+
+enum LOGGER_RT_SEVERITY
 {
-	LoggerRTSeverityCritical,
-	LoggerRTSeverityError,
-	LoggerRTSeverityWarn,
-	LoggerRTSeverityLog,
-	LoggerRTSeverityFlow,
-	LoggerRTSeverityInfo,
-	LoggerRTSeverityDebug
+	LOGGER_RT_SEVERITY_CRITICAL,
+	LOGGER_RT_SEVERITY_ERROR,
+	LOGGER_RT_SEVERITY_WARN,
+	LOGGER_RT_SEVERITY_LOG,
+	LOGGER_RT_SEVERITY_FLOW,
+	LOGGER_RT_SEVERITY_INFO,
+	LOGGER_RT_SEVERITY_DEBUG,
+
+	LOGGER_RT_NUM_OF_SEVERITY
 };
 
-//const char* LoggerRTSeverityStr[] = {"Critical","Error","Warn","Log","Flow","Info","Debug"};
-
-enum LoggerRTDevice
+enum LOGGER_RT_SERVICE
 {
-	LoggerRTCcu,
-	//add more
+	LOGGER_RT_GAS_SERVICE,
+	LOGGER_RT_CLIMATE_CONTROL_SERVICE,
+	LOGGER_RT_TIRE_PRESSURE_SERVICE,
+
+	LOGGER_RT_NUM_OF_SERVICES
 };
 
-typedef struct elementStru {
-	LoggerRTSeverity* severityMsg;
+typedef struct Element_In_Q {
+	LOGGER_RT_SEVERITY* severityMsg;
 	char* textMsg;
-} element;
+	uint32_t* cycleMsg;
+} element_In_Q;
 
-typedef struct dataSendStru {
-	element elementMsg;
-	LoggerRTDevice deviceMsg;
-} dataSend;
+typedef struct Data_Send_To_UI {
+	element_In_Q elementMsg;
+	LOGGER_RT_SERVICE serviceMsg;
+} data_Send_To_UI;
 
-typedef struct udpDataStru {
-	LoggerRTSeverity severityMsg;
-	char textMsg[100];
-} udpData;
+typedef struct UDP_Data_Send {
+	uint32_t cycleMsg;
+	LOGGER_RT_SEVERITY severityMsg;
+	LOGGER_RT_SERVICE serviceMsg;
+	char textMsg[MAX_SIZE_MESSAGE];
+} udp_Data_Send;
+
+typedef struct UDP_Received_Severity {
+	LOGGER_RT_SEVERITY severityMsg;
+	LOGGER_RT_SERVICE serviceMsg;
+} udp_Received_Severity;
 
 #endif // __DATATYPE_H

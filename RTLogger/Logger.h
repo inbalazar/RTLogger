@@ -6,29 +6,35 @@
 #include <cwchar>
 #include <stdio.h>
 #include <wchar.h>
+#include <windows.h>
 #include "LoggerMgr.h"
 
 #pragma warning(disable:4996)
 
 class Logger
 {
-	public:
+public:
 	Logger() { logMgr = LoggerMgr::GetInstance(); };
 	~Logger() { };
-	void init(const char* deviceName);
-	void printfFormat(const char* msg, char* buffer, char* arrBuffer, va_list arg);
 
-	void sendLoggerRTCritical(char* msg);
-	void sendLoggerRTError(char* msg);
-	void sendLoggerRTWarn(char* msg);
-	void sendLoggerRTLog(char* msg);
-	void sendLoggerRTFlow(char* msg);
-	void sendLoggerRTInfo(char* msg);
-	void sendLoggerRTDebug(const char* msg, ...);
+	static Logger* GetLogger();	
+	void Init(const char* serviceName);
+	void PrintfFormat(const char* msg, char* buffer, char* arrBuffer, va_list arg);
+	void SetCycle(uint32_t cycle);
+
+	void SendLoggerRTCritical(const char* msg, ...);
+	void SendLoggerRTError(const char* msg, ...);
+	void SendLoggerRTWarn(const char* msg, ...);
+	void SendLoggerRTLog(const char* msg, ...);
+	void SendLoggerRTFlow(const char* msg, ...);
+	void SendLoggerRTInfo(const char* msg, ...);
+	void SendLoggerRTDebug(const char* msg, ...);
 
 private:
+	static Logger* m_pclLoggerInstance;
 	LoggerMgr::stLoggerRTData* p_stLoggerRTData;
 	LoggerMgr* logMgr;
+	uint32_t cycleMsg;
 };
 
 #endif // __LOGGER_H

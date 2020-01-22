@@ -153,20 +153,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="CCU.cpp" />
+    <ClCompile Include="ClimateControlService.cpp" />
+    <ClCompile Include="GasService.cpp" />
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="DatagramSocket.cpp" />
     <ClCompile Include="Logger.cpp" />
     <ClCompile Include="LoggerMgr.cpp" />
+    <ClCompile Include="TirePressureService.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="CCU.h" />
+    <ClInclude Include="ClimateControlService.h" />
+    <ClInclude Include="GasService.h" />
+    <ClInclude Include="Main.h" />
     <ClInclude Include="DatagramSocket.h" />
     <ClInclude Include="DataTypes.h" />
     <ClInclude Include="Logger.h" />
     <ClInclude Include="LoggerMgr.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <ClInclude Include="TirePressureService.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

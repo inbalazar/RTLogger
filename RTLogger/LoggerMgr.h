@@ -12,10 +12,6 @@
 //#define _CRT_SECURE_NO_WARNINGS
 //#pragma warning(disable:4996)
 
-#define MAX_ELEMENT_SIZE 50 + 1
-
-using namespace std;
-
 class LoggerMgr
 {
 public:
@@ -23,35 +19,35 @@ public:
 		std::atomic<unsigned int> head;
 		std::atomic<unsigned int> tail;
 		unsigned int maxSize;
-		element msgsElements; //to do
-		//char* elements;
+		element_In_Q msgsElements;
 	} queue;
 
 	typedef struct LoggerRTData
 	{
-		LoggerRTSeverity eLoggerRTSeverityFromUI;
-		LoggerRTDevice eLoggerRTDivece;
+		LOGGER_RT_SEVERITY eLOGGER_RT_SEVERITYFromUI;
+		LOGGER_RT_SERVICE eLoggerRTDivece;
 		queue* queueMsgs;
 	}stLoggerRTData;
 
-	stLoggerRTData m_stArrLoggerRTData[1]; //todo defult
+	stLoggerRTData m_stArrLoggerRTData[LOGGER_RT_NUM_OF_SERVICES];
+	udp_Received_Severity studp_Received_Severity;
 
-	static const char* LoggerRTSeverityStr[7];// todo defult
-	static const char* LoggerRTDiveceStr[1];// todo defult
+	static const char* LOGGER_RT_SEVERITY_STR[LOGGER_RT_NUM_OF_SEVERITY];
+	static const char* LOGGER_RT_SERVICE_STR[LOGGER_RT_NUM_OF_SERVICES];
 
 	static LoggerMgr* GetInstance();
 	~LoggerMgr() {};
-	void init();
-	void sendToLoggerDisplay(dataSend* msg);
-	void startProcess();
-	stLoggerRTData* registerDevice(const char* deviceName);
+	void SendToLoggerDisplay(data_Send_To_UI* msg);
+	void ReceiveSeverityFromUI();
+	void StartProcess();
+	stLoggerRTData* Registerservice(const char* serviceName);
 
 	//Lockless
-	queue* createQueue(int maxSize);
-	void freeQueue(queue* q);
-	int enqueue(queue* q, char* element, LoggerRTSeverity eSeverity);
-	char* dequeue(queue* q);
-	unsigned int count(queue* q);
+	queue* CreateQueue(int maxSize);
+	void FreeQueue(queue* q);
+	int Enqueue(queue* q, char* element, LOGGER_RT_SEVERITY eSeverity, uint32_t cycleMsg);
+	char* Dequeue(queue* q);
+	unsigned int CountQ(queue* q);
 
 private: 
 	static LoggerMgr* m_pclInstance;

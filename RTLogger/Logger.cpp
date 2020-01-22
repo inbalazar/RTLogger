@@ -1,33 +1,10 @@
 #include "Logger.h"
 
-void Logger::sendLoggerRTCritical(char* msg)
-{
-}
+Logger* Logger::m_pclLoggerInstance;
 
-void Logger::sendLoggerRTError(char* msg)
+void Logger::SendLoggerRTCritical(const char* msg, ...)
 {
-}
-
-void Logger::sendLoggerRTWarn(char* msg)
-{
-}
-
-void Logger::sendLoggerRTLog(char* msg)
-{
-}
-
-void Logger::sendLoggerRTFlow(char* msg)
-{
-}
-
-void Logger::sendLoggerRTInfo(char* msg)
-{
-}
-
-void Logger::sendLoggerRTDebug(const char* msg, ...)
-{
-	p_stLoggerRTData->eLoggerRTSeverityFromUI = LoggerRTSeverityWarn; // need to remove!!!
-	if (p_stLoggerRTData->eLoggerRTSeverityFromUI >= LoggerRTSeverityWarn)
+	if (p_stLoggerRTData->eLOGGER_RT_SEVERITYFromUI >= LOGGER_RT_SEVERITY_CRITICAL)
 	{
 		char buffer[256];
 		char arrBuffer[256] = {};
@@ -35,24 +12,140 @@ void Logger::sendLoggerRTDebug(const char* msg, ...)
 		va_list arg;
 		va_start(arg, msg);
 
-		printfFormat(msg, buffer, arrBuffer, arg);
+		PrintfFormat(msg, buffer, arrBuffer, arg);
 
 		va_end(arg);
 
-		//p_stLoggerRTData->eLoggerRTSeverity = LoggerRTSeverityDebug;
-		
-		int ret = logMgr->enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LoggerRTSeverityDebug);
-		printf("\nenqueue: %d, count: %d, msg: %s\n", ret, logMgr->count(p_stLoggerRTData->queueMsgs),arrBuffer);
-		//printf("%d", LoggerMgr::GetInstance()->count(p_stLoggerRTData->queueMsgs));
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_CRITICAL, cycleMsg);
+		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
 	}
 }
 
-void Logger::init(const char* deviceName)
-{	 
-	p_stLoggerRTData = logMgr->registerDevice(deviceName);
+void Logger::SendLoggerRTError(const char* msg, ...)
+{
+	if (p_stLoggerRTData->eLOGGER_RT_SEVERITYFromUI >= LOGGER_RT_SEVERITY_ERROR)
+	{
+		char buffer[256];
+		char arrBuffer[256] = {};
+
+		va_list arg;
+		va_start(arg, msg);
+
+		PrintfFormat(msg, buffer, arrBuffer, arg);
+
+		va_end(arg);
+
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_ERROR, cycleMsg);
+		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+	}
 }
 
-void Logger::printfFormat(const char* msg, char* buffer, char* arrBuffer, va_list arg)
+void Logger::SendLoggerRTWarn(const char* msg, ...)
+{
+	if (p_stLoggerRTData->eLOGGER_RT_SEVERITYFromUI >= LOGGER_RT_SEVERITY_WARN)
+	{
+		char buffer[256];
+		char arrBuffer[256] = {};
+
+		va_list arg;
+		va_start(arg, msg);
+
+		PrintfFormat(msg, buffer, arrBuffer, arg);
+
+		va_end(arg);
+
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_WARN, cycleMsg);
+		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+	}
+}
+
+void Logger::SendLoggerRTLog(const char* msg, ...)
+{
+	if (p_stLoggerRTData->eLOGGER_RT_SEVERITYFromUI >= LOGGER_RT_SEVERITY_LOG)
+	{
+		char buffer[256];
+		char arrBuffer[256] = {};
+
+		va_list arg;
+		va_start(arg, msg);
+
+		PrintfFormat(msg, buffer, arrBuffer, arg);
+
+		va_end(arg);
+
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_LOG, cycleMsg);
+		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+	}
+}
+
+void Logger::SendLoggerRTFlow(const char* msg, ...)
+{
+	if (p_stLoggerRTData->eLOGGER_RT_SEVERITYFromUI >= LOGGER_RT_SEVERITY_FLOW)
+	{
+		char buffer[256];
+		char arrBuffer[256] = {};
+
+		va_list arg;
+		va_start(arg, msg);
+
+		PrintfFormat(msg, buffer, arrBuffer, arg);
+
+		va_end(arg);
+
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_FLOW, cycleMsg);
+		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+	}
+}
+
+void Logger::SendLoggerRTInfo(const char* msg, ...)
+{
+	if (p_stLoggerRTData->eLOGGER_RT_SEVERITYFromUI >= LOGGER_RT_SEVERITY_INFO)
+	{
+		char buffer[256];
+		char arrBuffer[256] = {};
+
+		va_list arg;
+		va_start(arg, msg);
+
+		PrintfFormat(msg, buffer, arrBuffer, arg);
+
+		va_end(arg);
+
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_INFO, cycleMsg);
+		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+	}
+}
+
+void Logger::SendLoggerRTDebug(const char* msg, ...)
+{
+	if (p_stLoggerRTData->eLOGGER_RT_SEVERITYFromUI >= LOGGER_RT_SEVERITY_DEBUG)
+	{
+		char buffer[256];
+		char arrBuffer[256] = {};
+
+		va_list arg;
+		va_start(arg, msg);
+
+		PrintfFormat(msg, buffer, arrBuffer, arg);
+
+		va_end(arg);
+		
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_DEBUG, cycleMsg);
+		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs),arrBuffer);
+	}
+}
+
+Logger* Logger::GetLogger()
+{
+	return m_pclLoggerInstance = new Logger();
+}
+
+void Logger::Init(const char* serviceName)
+{	 
+	p_stLoggerRTData = logMgr->Registerservice(serviceName);
+}
+
+void Logger::PrintfFormat(const char* msg, char* buffer, char* arrBuffer, va_list arg)
 {
 	const char* traverse;
 	unsigned int i;
@@ -102,4 +195,9 @@ void Logger::printfFormat(const char* msg, char* buffer, char* arrBuffer, va_lis
 		}
 		strcat(arrBuffer, buffer);
 	}
+}
+
+void Logger::SetCycle(uint32_t cycle)
+{
+	cycleMsg = cycle;
 }

@@ -2,18 +2,56 @@
 #include "DatagramSocket.h"
 
 LoggerMgr* LoggerMgr::m_pclInstance;
-const char* LoggerMgr::LoggerRTSeverityStr[] = { "Critical","Error","Warn","Log","Flow","Info","Debug" };
-const char* LoggerMgr::LoggerRTDiveceStr[] = { "CCU" };
+const char* LoggerMgr::LOGGER_RT_SEVERITY_STR[] = { "CRITICAL", "ERROR", "WARN", "LOG", "FLOW", "INFO", "DEBUG" };
+const char* LoggerMgr::LOGGER_RT_SERVICE_STR[] = { "Gas", "ClimateControl", "TirePressure" };
 
+//////////////////
+double PCFreq = 0.0;
+LONGLONG CounterStart = 0;
+
+void StartCounter()
+{
+	LARGE_INTEGER li;
+	if (!QueryPerformanceFrequency(&li))
+		cout << "QueryPerformanceFrequency failed!\n";
+
+	PCFreq = double(li.QuadPart) / 1000.0;
+
+	QueryPerformanceCounter(&li);
+	CounterStart = li.QuadPart;
+}
+
+double GetCounter()
+{
+	LARGE_INTEGER li;
+	QueryPerformanceCounter(&li);
+	return double(li.QuadPart - CounterStart) / PCFreq;
+}
+
+void TestTimer()
+{
+	StartCounter(); // <--- only needs called once per run
+
+	cout << "Starting Timed Test" << endl;
+	double start = GetCounter();
+
+	// Test long/slow artifact here: should take at least > 10us, or call many times in a loop until it does
+
+	double end = GetCounter();
+	double elapsed = end - start;
+	printf("  ::: Elapsed availableKeywords(): %3.3f ms, %3.3f sec, %3.3f min\n", elapsed,
+		elapsed / 1000.0, elapsed / 1000.0 / 60.0);
+}
+////////////////
 LoggerMgr::LoggerMgr()
 {
 	for (int i = 0; i < sizeof(m_stArrLoggerRTData) / sizeof(LoggerRTData); i++)
 	{
-		m_stArrLoggerRTData[i].queueMsgs = createQueue(1000);
+		m_stArrLoggerRTData[i].queueMsgs = CreateQueue(100);
 	}
 }
 
-LoggerMgr::queue* LoggerMgr::createQueue(int maxSize)
+LoggerMgr::queue* LoggerMgr::CreateQueue(int maxSize)
 {
 	queue* q = new queue[sizeof(queue)];
 	q->head = 0;
@@ -23,19 +61,18 @@ LoggerMgr::queue* LoggerMgr::createQueue(int maxSize)
 	q->msgsElements.textMsg = new char[charArrSize];
 	memset(q->msgsElements.textMsg, 0, charArrSize);
 
-	q->msgsElements.severityMsg = new LoggerRTSeverity[charArrSize];
-
+	q->msgsElements.severityMsg = new LOGGER_RT_SEVERITY[charArrSize];
+	q->msgsElements.cycleMsg = new uint32_t[charArrSize];
 	return q;
 }
 
-void LoggerMgr::freeQueue(queue* q)
+void LoggerMgr::FreeQueue(queue* q)
 {
 	delete[]q->msgsElements.textMsg;
-	delete[]q->msgsElements.severityMsg;
 	delete[]q;
 }
 
-int LoggerMgr::enqueue(queue* q, char* element, LoggerRTSeverity eSeverity)
+int LoggerMgr::Enqueue(queue* q, char* element, LOGGER_RT_SEVERITY eSeverity, uint32_t cycleMsg)
 {
 	int nextTail = (q->tail + 1) % q->maxSize;
 	if (nextTail == q->head)
@@ -47,12 +84,13 @@ int LoggerMgr::enqueue(queue* q, char* element, LoggerRTSeverity eSeverity)
 	strncpy(&q->msgsElements.textMsg[q->tail * MAX_ELEMENT_SIZE], element, MAX_ELEMENT_SIZE);
 
 	q->msgsElements.severityMsg[q->tail * MAX_ELEMENT_SIZE] = eSeverity;
+	q->msgsElements.cycleMsg[q->tail * MAX_ELEMENT_SIZE] = cycleMsg;
 
 	q->tail = nextTail;
 	return 1;
 }
 
-char* LoggerMgr::dequeue(LoggerMgr::queue* q)
+char* LoggerMgr::Dequeue(LoggerMgr::queue* q)
 {
 	if (q->head == q->tail) {
 		return NULL;
@@ -63,7 +101,7 @@ char* LoggerMgr::dequeue(LoggerMgr::queue* q)
 	return &q->msgsElements.textMsg[head * MAX_ELEMENT_SIZE];
 }
 
-unsigned int LoggerMgr::count(LoggerMgr::queue* q)
+unsigned int LoggerMgr::CountQ(LoggerMgr::queue* q)
 {
 	if (q->head <= q->tail) {
 		return q->tail - q->head;
@@ -83,79 +121,113 @@ LoggerMgr* LoggerMgr::GetInstance()
 }
 
 
-void LoggerMgr::init()
-{
-	//
-}
-
-void LoggerMgr::sendToLoggerDisplay(dataSend* msg)
+void LoggerMgr::SendToLoggerDisplay(data_Send_To_UI* msg)
 {
 	char ipAdress[] = "127.0.0.1";
 	DatagramSocket* s = new DatagramSocket(5001, ipAdress, TRUE, TRUE);
+	UDP_Data_Send dataToSend = UDP_Data_Send();
 
-	// Change dataToSend to a new type...
-	udpData dataToSend = udpData();
-	//dataToSend.severityMsg = msg->elementMsg.severityMsg;
 	dataToSend.severityMsg = *msg->elementMsg.severityMsg;
+	dataToSend.serviceMsg = msg->serviceMsg;
+	dataToSend.cycleMsg = *msg->elementMsg.cycleMsg;
+
 	strncpy(dataToSend.textMsg, msg->elementMsg.textMsg, strlen(msg->elementMsg.textMsg));
+	
 	s->send((char*)&dataToSend, sizeof(dataToSend));
 }
 
-void LoggerMgr::startProcess()
+void LoggerMgr::ReceiveSeverityFromUI()
 {
+	char ipAdress[] = "127.0.0.1";
+	DatagramSocket* s = new DatagramSocket(5010, ipAdress, FALSE, FALSE);
+
 	while (true)
 	{
-		//printf("%s", m_stArrLoggerRTData[0].queueMsgs->elements);
-		for (int i = 0; i < sizeof(m_stArrLoggerRTData) / sizeof(LoggerRTData); i++)
-		{
-			//printf(" !%d", count(m_stArrLoggerRTData[i].queueMsgs));
-			//printf("\nsize: %d",sizeof(m_stArrLoggerRTData) / sizeof(LoggerRTData));
-
-			if (count(m_stArrLoggerRTData[i].queueMsgs) != 0)
-			{
-				for (int j = 0; j < count(m_stArrLoggerRTData[i].queueMsgs); j++)
-				{
-					char* msg =
-						&m_stArrLoggerRTData[i].queueMsgs->msgsElements.textMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
-					LoggerRTSeverity severity =
-						m_stArrLoggerRTData[i].queueMsgs->msgsElements.severityMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
-
-					element stElement;// move to h file
-					stElement.textMsg = msg;
-					stElement.severityMsg = &severity;
-
-					dataSend stDataSend;
-					stDataSend.elementMsg = stElement;
-					stDataSend.deviceMsg = m_stArrLoggerRTData[i].eLoggerRTDivece;
-
-					if (msg != NULL || msg != "")
-					{
-						sendToLoggerDisplay(&stDataSend); //need to send struct
-					}
-					else
-					{
-						//do nothing
-					}
-					char* msg2 = dequeue(m_stArrLoggerRTData[i].queueMsgs); //remove return
-
-					printf("\ndequeue: %s, count: %d\n", stDataSend.elementMsg.textMsg, count(m_stArrLoggerRTData[i].queueMsgs));
-					printf("\ndequeue: %s, severity: %s\n", stElement.textMsg, LoggerRTSeverityStr[*stDataSend.elementMsg.severityMsg]);
-					printf("\ndequeue: %s, device: %s\n", stElement.textMsg, LoggerRTDiveceStr[stDataSend.deviceMsg]);
-				}
-			}
-
-		}
+		int rec = s->receive((char*)&studp_Received_Severity, 8);
+		m_stArrLoggerRTData[studp_Received_Severity.serviceMsg].eLOGGER_RT_SEVERITYFromUI =
+			studp_Received_Severity.severityMsg;
 	}
 }
 
-LoggerMgr::stLoggerRTData* LoggerMgr::registerDevice(const char* deviceName)
+void LoggerMgr::StartProcess()
 {
-	if (deviceName == "CCU")
+	int counter = 0;
+	while (true)
 	{
-		m_stArrLoggerRTData[LoggerRTCcu].eLoggerRTDivece = LoggerRTCcu;
-		return &m_stArrLoggerRTData[LoggerRTCcu];
+		//StartCounter(); // <--- only needs called once per run
+		//cout << "Starting Timed Test" << endl;
+		//double start = GetCounter();
+		while (counter <= MAX_MSG_TO_SEND)
+		{
+			for (int i = 0; i < LOGGER_RT_NUM_OF_SERVICES; i++)
+			{
+				if (CountQ(m_stArrLoggerRTData[i].queueMsgs) >= 0)
+				{
+					for (int j = 0; j < CountQ(m_stArrLoggerRTData[i].queueMsgs); j++)
+					{
+						char* msg =
+							&m_stArrLoggerRTData[i].queueMsgs->msgsElements.textMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
+						LOGGER_RT_SEVERITY severity =
+							m_stArrLoggerRTData[i].queueMsgs->msgsElements.severityMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
+						uint32_t cycleSend =
+							m_stArrLoggerRTData[i].queueMsgs->msgsElements.cycleMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
+
+						element_In_Q stElement;
+						stElement.textMsg = msg;
+						stElement.severityMsg = &severity;
+						stElement.cycleMsg = &cycleSend;
+
+						data_Send_To_UI stDataSend;
+						stDataSend.elementMsg = stElement;
+						stDataSend.serviceMsg = m_stArrLoggerRTData[i].eLoggerRTDivece;
+
+						if (msg != NULL || msg != "")
+						{
+							SendToLoggerDisplay(&stDataSend);
+						}
+
+						char* deleteMsg = Dequeue(m_stArrLoggerRTData[i].queueMsgs);
+
+						printf("\nDequeue: %s, count: %d\n", stDataSend.elementMsg.textMsg, CountQ(m_stArrLoggerRTData[i].queueMsgs));
+						printf("\nDequeue: %s, severity: %s\n", stElement.textMsg, LOGGER_RT_SEVERITY_STR[*stDataSend.elementMsg.severityMsg]);
+						printf("\nDequeue: %s, service: %s\n", stElement.textMsg, LOGGER_RT_SERVICE_STR[stDataSend.serviceMsg]);
+						printf("\nDequeue: %s, cycle: %d\n", stElement.textMsg, *stDataSend.elementMsg.cycleMsg);
+					}
+				}
+			}
+		}
+		Sleep(MILLISECONDS_TO_60_HZ);
+		++counter;
+
+		/*double end = GetCounter();
+		double elapsed = end - start;
+		printf("  ::: Elapsed availableKeywords(): %3.3f ms, %3.3f sec, %3.3f min\n", elapsed,
+		elapsed / 1000.0, elapsed / 1000.0 / 60.0);*/
 	}
-	//else if -need to add
+}
+
+LoggerMgr::stLoggerRTData* LoggerMgr::Registerservice(const char* serviceName)
+{
+	if (serviceName == "Gas")
+	{
+		m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE].eLoggerRTDivece = LOGGER_RT_GAS_SERVICE;
+		m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
+		return &m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE];
+	}
+	else if (serviceName == "ClimateControl")
+	{
+		m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE].eLoggerRTDivece = LOGGER_RT_CLIMATE_CONTROL_SERVICE;
+		m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
+		return &m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE];
+	}
+	else if (serviceName == "TirePressure")
+	{
+		m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE].eLoggerRTDivece = LOGGER_RT_TIRE_PRESSURE_SERVICE;
+		m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
+		return &m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE];
+	}
 
 	return NULL;
 }
+
+
