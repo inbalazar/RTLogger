@@ -1,3 +1,6 @@
+#ifndef MAIN_H_
+#define MAIN_H_
+
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -12,6 +15,9 @@
 #include "TirePressureService.h"
 
 using namespace std;
-using namespace std::chrono;
+//using namespace std::chrono;
 
-string time_in_HH_MM_SS_MMM();
+uint32_t GetCycle();
+//string time_in_HH_MM_SS_MMM();
+
+#endif //MAIN_H_

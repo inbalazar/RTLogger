@@ -1,4 +1,5 @@
 #include "Logger.h"
+#include "Main.h"
 
 Logger* Logger::m_pclLoggerInstance;
 
@@ -16,8 +17,8 @@ void Logger::SendLoggerRTCritical(const char* msg, ...)
 
 		va_end(arg);
 
-		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_CRITICAL, cycleMsg);
-		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_CRITICAL, GetCycle());
+		printf("\nEnqueue: %d, count: %d, msg: %s, cycle: %d \n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer, GetCycle());
 	}
 }
 
@@ -35,8 +36,8 @@ void Logger::SendLoggerRTError(const char* msg, ...)
 
 		va_end(arg);
 
-		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_ERROR, cycleMsg);
-		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_ERROR, GetCycle());
+		printf("\nEnqueue: %d, count: %d, msg: %s, cycle: %d \n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer, GetCycle());
 	}
 }
 
@@ -54,8 +55,8 @@ void Logger::SendLoggerRTWarn(const char* msg, ...)
 
 		va_end(arg);
 
-		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_WARN, cycleMsg);
-		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_WARN, GetCycle());
+		printf("\nEnqueue: %d, count: %d, msg: %s, cycle: %d \n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer, GetCycle());
 	}
 }
 
@@ -73,8 +74,8 @@ void Logger::SendLoggerRTLog(const char* msg, ...)
 
 		va_end(arg);
 
-		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_LOG, cycleMsg);
-		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_LOG, GetCycle());
+		printf("\nEnqueue: %d, count: %d, msg: %s, cycle: %d \n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer, GetCycle());
 	}
 }
 
@@ -92,8 +93,8 @@ void Logger::SendLoggerRTFlow(const char* msg, ...)
 
 		va_end(arg);
 
-		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_FLOW, cycleMsg);
-		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_FLOW, GetCycle());
+		printf("\nEnqueue: %d, count: %d, msg: %s, cycle: %d \n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer, GetCycle());
 	}
 }
 
@@ -111,8 +112,8 @@ void Logger::SendLoggerRTInfo(const char* msg, ...)
 
 		va_end(arg);
 
-		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_INFO, cycleMsg);
-		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer);
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_INFO, GetCycle());
+		printf("\nEnqueue: %d, count: %d, msg: %s, cycle: %d \n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer, GetCycle());
 	}
 }
 
@@ -130,8 +131,8 @@ void Logger::SendLoggerRTDebug(const char* msg, ...)
 
 		va_end(arg);
 		
-		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_DEBUG, cycleMsg);
-		printf("\nEnqueue: %d, count: %d, msg: %s\n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs),arrBuffer);
+		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_DEBUG, GetCycle());
+		printf("\nEnqueue: %d, count: %d, msg: %s, cycle: %d \n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs),arrBuffer, GetCycle());
 	}
 }
 
@@ -195,9 +196,4 @@ void Logger::PrintfFormat(const char* msg, char* buffer, char* arrBuffer, va_lis
 		}
 		strcat(arrBuffer, buffer);
 	}
-}
-
-void Logger::SetCycle(uint32_t cycle)
-{
-	cycleMsg = cycle;
 }

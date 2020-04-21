@@ -1,16 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Text;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-//using Telerik.QuickStart.WinControls;
 using System.Net;
 using System.Net.Sockets;
-
+using System.IO;
+using System.Linq;
+using System.Threading;
+using Timer = System.Threading.Timer;
 
 namespace GUI_Logger
 {
@@ -19,11 +18,14 @@ namespace GUI_Logger
         string[] LOGGER_RT_SEVERITY_STR = { "CRITICAL", "ERROR", "WARN", "LOG", "FLOW", "INFO", "DEBUG" };
         string[] LOGGER_RT_SERVICE_STR = { "Gas", "ClimateControl", "TirePressure" };
 
+        public const int MaxRowsForLogFile = 50;
+        int numOfRows = 0;
+
         UdpClient Client = new UdpClient(5001); // port number
 
-        //string data = "";
         public Form1()
-        { 
+        {
+            
             InitializeComponent();
 
             this.dataGridView1.ShowGroupPanel = true;
@@ -31,54 +33,52 @@ namespace GUI_Logger
             this.dataGridView1.ReadOnly = true;
             
             Client.BeginReceive(new AsyncCallback(recV), null);
-        }
+            
+            }
 
         public void recV(IAsyncResult res)
         {
+            Thread.Sleep(100);
+
             IPEndPoint RemoteIP = new IPEndPoint(IPAddress.Any, 60240);
             Byte[] receivd = Client.EndReceive(res, ref RemoteIP);
 
             var index = 0;
 
-            var cycleMsg = BitConverter.ToUInt32(receivd, index);
+            uint cycleMsg = BitConverter.ToUInt32(receivd, index);
             index += 4;
-            var severityMsg = (LOGGER_RT_SEVERITY)BitConverter.ToInt32(receivd, index);
+            LOGGER_RT_SEVERITY severityMsg = (LOGGER_RT_SEVERITY)BitConverter.ToInt32(receivd, index);
             index += 4;
-            var serviceMsg = (LOGGER_RT_SERVICE)BitConverter.ToInt32(receivd, index);
+            LOGGER_RT_SERVICE serviceMsg = (LOGGER_RT_SERVICE)BitConverter.ToInt32(receivd, index);
             index += 4;
-            var endStringIndex = Array.IndexOf(receivd, (byte)0, index); // TODO: make sure > index;
-            var textMsg = Encoding.UTF8.GetString(receivd, index, endStringIndex - index);
+            var endStringIndex = Array.IndexOf(receivd, (byte)0, index);
+            string textMsg = Encoding.UTF8.GetString(receivd, index, endStringIndex - index);
             index = endStringIndex + 1;
             
+            Console.WriteLine(cycleMsg);
             Console.WriteLine(textMsg);
 
             this.Invoke(new MethodInvoker(delegate {
 
                 dt.Rows.Add(cycleMsg, LOGGER_RT_SERVICE_STR[(int)serviceMsg], LOGGER_RT_SEVERITY_STR[(int)severityMsg], textMsg);
-
+                numOfRows++;
                 reloadTable(dt);
 
+                if (numOfRows % MaxRowsForLogFile == 0)
+                {
+                    AutoExportDgvToXML();
+                }
             }
             ));
             Client.BeginReceive(new AsyncCallback(recV), null);
 
         }
         DataTable dt = new DataTable();
-        //private dataSend stuff;
 
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
       
-        }
-
-        private void Form1_Load(object sender, EventArgs e)
-        {
-        }
-
-        private void DataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
         }
 
         private void Form1_Load_1(object sender, EventArgs e)
@@ -98,7 +98,6 @@ namespace GUI_Logger
             dt.Columns.Add("Cycle", typeof(int));
             dt.Columns.Add("Services", typeof(string));
             dt.Columns.Add("Severity", typeof(string));
-
             dt.Columns.Add("Message", typeof(string));
 
 
@@ -114,7 +113,6 @@ namespace GUI_Logger
             reloadTable(dt);
         }
 
-
         public void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
         {      
                 DataView dv = dt.DefaultView;
@@ -126,17 +124,13 @@ namespace GUI_Logger
 
         void reloadTable(DataTable dt)
         {
-
             dataGridView1.DataSource = dt;
             setColor();
-
-
         }
 
         void setColor()
         {
             this.dataGridView1.ShowGroupPanel = true;
-         
 
             for (int y = 0; y < this.dataGridView1.RowCount; y++) 
             {
@@ -178,51 +172,11 @@ namespace GUI_Logger
 
                 }
             }
-
-        }
-
-        private void Button1_Click(object sender, EventArgs e)
-        {
-
-            DataView dv = dt.DefaultView;
-          
-             dv.RowFilter = string.Format("Severity = '%{0}%'", textBox1.Text);
-            dataGridView1.DataSource = dv.ToTable();
-
-
-
-        }
-
-
-        private void TextBox1_TextChanged(object sender, KeyPressEventArgs e)
-        {
-
-
         }
 
         private void sortChange(object sender, EventArgs e)
         {
             setColor();
-        }
-
-        private void Label1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void TableLayoutPanel1_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
-        private void Label3_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ListBox5_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
 
         private void Label3_Click_1(object sender, EventArgs e)
@@ -231,11 +185,6 @@ namespace GUI_Logger
         }
 
         private void Label5_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
@@ -361,7 +310,6 @@ namespace GUI_Logger
            
         }
 
-
         private void XuiGradientPanel1_Paint(object sender, PaintEventArgs e)
         {
 
@@ -372,30 +320,74 @@ namespace GUI_Logger
 
         }
 
-        private void XuiClock1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void Label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void JFlatButton2_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void DataGridView1_Click(object sender, EventArgs e)
         {
 
         }
 
-        private void Label1_Click_1(object sender, EventArgs e)
+        private void textBox1_TextChanged(object sender, EventArgs e)
         {
 
         }
 
+        private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
+        {
+
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            ExportDgvToXML();
+        }
+
+        private void ExportDgvToXML()
+        {
+            DataSet dataSet = new DataSet();
+            DataTable dtCopy = dt.Copy();
+            dataSet.Tables.Add(dtCopy);
+            DataTable data = dataSet.Tables[0].AsEnumerable().Reverse().Take(MaxRowsForLogFile).OrderBy(row => row["cycle"]).CopyToDataTable();
+            dataSet.Tables.Remove(dtCopy);
+            dataSet.Tables.Add(data);
+
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "XML|*.xml";
+            if (sfd.ShowDialog() == DialogResult.OK)
+            {
+                try
+                { 
+                    dataSet.WriteXml(sfd.FileName);
+                    dataSet.Tables.Remove(dtCopy);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex);
+                }
+            }
+        }
+        private void AutoExportDgvToXML()
+        {
+            DataSet dataSet = new DataSet();
+            dataSet.Tables.Add(dt);
+            DataTable data = dataSet.Tables[0].AsEnumerable().Reverse().Take(MaxRowsForLogFile).OrderBy(row => row["cycle"]).CopyToDataTable();
+            dataSet.Tables.Remove(dt);
+            dataSet.Tables.Add(data);
+
+            string dateValue = DateTime.Now.ToString("ddMMyyyy") + "\\";
+            if (!Directory.Exists(dateValue))
+            {
+                Directory.CreateDirectory(dateValue);
+            }
+            string dateTimeValue = dateValue + DateTime.Now.ToString("ddMMyyyyTHHmmss") + ".xml";
+
+            try
+            {
+                dataSet.WriteXml(dateTimeValue);
+                dataSet.Tables.Remove(dt);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex);
+            }
+        }
     }
 }

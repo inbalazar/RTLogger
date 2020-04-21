@@ -285,6 +285,11 @@
     <Compile Include="DataType.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="DataType.cs.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>DataType.cs.resx</DependentUpon>
+    </Compile>
     <Compile Include="DataType.Designer.cs">
       <DependentUpon>DataType.cs</DependentUpon>
     </Compile>
@@ -298,6 +303,8 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="DataType.cs.resx">
       <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>DataType.cs.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>

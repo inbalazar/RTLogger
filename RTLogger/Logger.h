@@ -14,13 +14,12 @@
 class Logger
 {
 public:
-	Logger() { logMgr = LoggerMgr::GetInstance(); };
+	Logger() { logMgr = LoggerMgr::GetInstance(); p_stLoggerRTData = NULL; };
 	~Logger() { };
 
 	static Logger* GetLogger();	
 	void Init(const char* serviceName);
 	void PrintfFormat(const char* msg, char* buffer, char* arrBuffer, va_list arg);
-	void SetCycle(uint32_t cycle);
 
 	void SendLoggerRTCritical(const char* msg, ...);
 	void SendLoggerRTError(const char* msg, ...);
@@ -34,7 +33,6 @@ private:
 	static Logger* m_pclLoggerInstance;
 	LoggerMgr::stLoggerRTData* p_stLoggerRTData;
 	LoggerMgr* logMgr;
-	uint32_t cycleMsg;
 };
 
 #endif // __LOGGER_H

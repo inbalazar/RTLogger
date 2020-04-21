@@ -5,7 +5,7 @@ LoggerMgr* LoggerMgr::m_pclInstance;
 const char* LoggerMgr::LOGGER_RT_SEVERITY_STR[] = { "CRITICAL", "ERROR", "WARN", "LOG", "FLOW", "INFO", "DEBUG" };
 const char* LoggerMgr::LOGGER_RT_SERVICE_STR[] = { "Gas", "ClimateControl", "TirePressure" };
 
-//////////////////
+//Get time
 double PCFreq = 0.0;
 LONGLONG CounterStart = 0;
 
@@ -42,9 +42,16 @@ void TestTimer()
 	printf("  ::: Elapsed availableKeywords(): %3.3f ms, %3.3f sec, %3.3f min\n", elapsed,
 		elapsed / 1000.0, elapsed / 1000.0 / 60.0);
 }
-////////////////
+//
+
 LoggerMgr::LoggerMgr()
 {
+	m_stArrLoggerRTData->eLoggerRTService;
+	m_stArrLoggerRTData->eLOGGER_RT_SEVERITYFromUI;;
+	m_stArrLoggerRTData->queueMsgs = NULL;
+	studp_Received_Severity.serviceMsg = LOGGER_RT_GAS_SERVICE;
+	studp_Received_Severity.severityMsg = LOGGER_RT_SEVERITY_CRITICAL;
+
 	for (int i = 0; i < sizeof(m_stArrLoggerRTData) / sizeof(LoggerRTData); i++)
 	{
 		m_stArrLoggerRTData[i].queueMsgs = CreateQueue(100);
@@ -53,7 +60,8 @@ LoggerMgr::LoggerMgr()
 
 LoggerMgr::queue* LoggerMgr::CreateQueue(int maxSize)
 {
-	queue* q = new queue[sizeof(queue)];
+	queue* q = (queue*)operator new (sizeof(queue));
+	
 	q->head = 0;
 	q->tail = 0;
 	q->maxSize = maxSize + 1;
@@ -62,7 +70,7 @@ LoggerMgr::queue* LoggerMgr::CreateQueue(int maxSize)
 	memset(q->msgsElements.textMsg, 0, charArrSize);
 
 	q->msgsElements.severityMsg = new LOGGER_RT_SEVERITY[charArrSize];
-	q->msgsElements.cycleMsg = new uint32_t[charArrSize];
+	q->msgsElements.cycle = new uint32_t[charArrSize];
 	return q;
 }
 
@@ -84,7 +92,7 @@ int LoggerMgr::Enqueue(queue* q, char* element, LOGGER_RT_SEVERITY eSeverity, ui
 	strncpy(&q->msgsElements.textMsg[q->tail * MAX_ELEMENT_SIZE], element, MAX_ELEMENT_SIZE);
 
 	q->msgsElements.severityMsg[q->tail * MAX_ELEMENT_SIZE] = eSeverity;
-	q->msgsElements.cycleMsg[q->tail * MAX_ELEMENT_SIZE] = cycleMsg;
+	q->msgsElements.cycle[q->tail * MAX_ELEMENT_SIZE] = cycleMsg;
 
 	q->tail = nextTail;
 	return 1;
@@ -129,7 +137,7 @@ void LoggerMgr::SendToLoggerDisplay(data_Send_To_UI* msg)
 
 	dataToSend.severityMsg = *msg->elementMsg.severityMsg;
 	dataToSend.serviceMsg = msg->serviceMsg;
-	dataToSend.cycleMsg = *msg->elementMsg.cycleMsg;
+	dataToSend.cycle = *msg->elementMsg.cycle;
 
 	strncpy(dataToSend.textMsg, msg->elementMsg.textMsg, strlen(msg->elementMsg.textMsg));
 	
@@ -170,16 +178,16 @@ void LoggerMgr::StartProcess()
 						LOGGER_RT_SEVERITY severity =
 							m_stArrLoggerRTData[i].queueMsgs->msgsElements.severityMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
 						uint32_t cycleSend =
-							m_stArrLoggerRTData[i].queueMsgs->msgsElements.cycleMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
+							m_stArrLoggerRTData[i].queueMsgs->msgsElements.cycle[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
 
 						element_In_Q stElement;
 						stElement.textMsg = msg;
 						stElement.severityMsg = &severity;
-						stElement.cycleMsg = &cycleSend;
+						stElement.cycle = &cycleSend;
 
 						data_Send_To_UI stDataSend;
 						stDataSend.elementMsg = stElement;
-						stDataSend.serviceMsg = m_stArrLoggerRTData[i].eLoggerRTDivece;
+						stDataSend.serviceMsg = m_stArrLoggerRTData[i].eLoggerRTService;
 
 						if (msg != NULL || msg != "")
 						{
@@ -191,7 +199,7 @@ void LoggerMgr::StartProcess()
 						printf("\nDequeue: %s, count: %d\n", stDataSend.elementMsg.textMsg, CountQ(m_stArrLoggerRTData[i].queueMsgs));
 						printf("\nDequeue: %s, severity: %s\n", stElement.textMsg, LOGGER_RT_SEVERITY_STR[*stDataSend.elementMsg.severityMsg]);
 						printf("\nDequeue: %s, service: %s\n", stElement.textMsg, LOGGER_RT_SERVICE_STR[stDataSend.serviceMsg]);
-						printf("\nDequeue: %s, cycle: %d\n", stElement.textMsg, *stDataSend.elementMsg.cycleMsg);
+						printf("\nDequeue: %s, cycle: %d\n", stElement.textMsg, *stDataSend.elementMsg.cycle);
 					}
 				}
 			}
@@ -210,19 +218,19 @@ LoggerMgr::stLoggerRTData* LoggerMgr::Registerservice(const char* serviceName)
 {
 	if (serviceName == "Gas")
 	{
-		m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE].eLoggerRTDivece = LOGGER_RT_GAS_SERVICE;
+		m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE].eLoggerRTService = LOGGER_RT_GAS_SERVICE;
 		m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
 		return &m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE];
 	}
 	else if (serviceName == "ClimateControl")
 	{
-		m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE].eLoggerRTDivece = LOGGER_RT_CLIMATE_CONTROL_SERVICE;
+		m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE].eLoggerRTService = LOGGER_RT_CLIMATE_CONTROL_SERVICE;
 		m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
 		return &m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE];
 	}
 	else if (serviceName == "TirePressure")
 	{
-		m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE].eLoggerRTDivece = LOGGER_RT_TIRE_PRESSURE_SERVICE;
+		m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE].eLoggerRTService = LOGGER_RT_TIRE_PRESSURE_SERVICE;
 		m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
 		return &m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE];
 	}

@@ -9,9 +9,9 @@ void GasService::StartJob()
 
 	int i = 0;
 
-	while (true)
-	{
-		if (i < 100)
+	//while (true)
+	//{
+		while (i < 100)
 		{
 			Sleep(1000);
 			log->SendLoggerRTCritical("Gas service unable to start!");
@@ -24,7 +24,8 @@ void GasService::StartJob()
 
 			++i;
 		}
-	}
+	//}
+		Sleep(0.001);
 }
 
 GasService* GasService::GetInstance()

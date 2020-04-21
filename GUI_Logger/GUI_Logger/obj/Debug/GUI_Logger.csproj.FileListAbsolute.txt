@@ -16,7 +16,6 @@ C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\obj
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\obj\Debug\cs\GUI_Logger.resources.dll
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\obj\Debug\GUI_Logger.exe
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\WindowsFormsApplication1\obj\Debug\GUI_Logger.pdb
-C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\GUI_Logger\obj\Debug\GUI_Logger.csprojAssemblyReference.cache
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\GUI_Logger\obj\Debug\GUI_Logger.Form1.resources
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\GUI_Logger\obj\Debug\GUI_Logger.Properties.Resources.resources
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\GUI_Logger\obj\Debug\GUI_Logger.DataType.cs.resources
@@ -34,3 +33,4 @@ C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\GUI_Logger\bin\Debug\Telerik
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\GUI_Logger\bin\Debug\MediaFoundation.dll
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\GUI_Logger\obj\Debug\cs\GUI_Logger.resources.dll
 C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\GUI_Logger\obj\Debug\GUI_Logger.csproj.CopyComplete
+C:\Users\inbalazar\source\repos\RTLogger\GUI_Logger\GUI_Logger\obj\Debug\GUI_Logger.csprojAssemblyReference.cache

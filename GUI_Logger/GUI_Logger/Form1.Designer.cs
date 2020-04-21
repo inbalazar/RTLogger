@@ -1,6 +1,4 @@
-﻿using Telerik.WinControls.UI;
-using Telerik.Windows.Diagrams.Core;
-
+﻿
 namespace GUI_Logger
 {
     partial class Form1
@@ -31,7 +29,7 @@ namespace GUI_Logger
         /// </summary>
         private void InitializeComponent()
         {
-            Telerik.WinControls.UI.TableViewDefinition tableViewDefInition1 = new Telerik.WinControls.UI.TableViewDefinition();
+            Telerik.WinControls.UI.TableViewDefinition tableViewDefinition1 = new Telerik.WinControls.UI.TableViewDefinition();
             Telerik.WinControls.UI.RadListDataItem radListDataItem1 = new Telerik.WinControls.UI.RadListDataItem();
             Telerik.WinControls.UI.RadListDataItem radListDataItem2 = new Telerik.WinControls.UI.RadListDataItem();
             Telerik.WinControls.UI.RadListDataItem radListDataItem3 = new Telerik.WinControls.UI.RadListDataItem();
@@ -128,6 +126,8 @@ namespace GUI_Logger
             this.directorySearcher1 = new System.DirectoryServices.DirectorySearcher();
             this.xuiGradientPanel1 = new XanderUI.XUIGradientPanel();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.button1 = new XanderUI.XUIButton();
+            this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1.MasterTemplate)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.textBox1)).BeginInit();
@@ -158,7 +158,7 @@ namespace GUI_Logger
             this.dataGridView1.MasterTemplate.AllowAddNewRow = false;
             this.dataGridView1.MasterTemplate.AutoSizeColumnsMode = Telerik.WinControls.UI.GridViewAutoSizeColumnsMode.Fill;
             this.dataGridView1.MasterTemplate.EnableFiltering = true;
-            this.dataGridView1.MasterTemplate.ViewDefinition = tableViewDefInition1;
+            this.dataGridView1.MasterTemplate.ViewDefinition = tableViewDefinition1;
             this.dataGridView1.Name = "dataGridView1";
             // 
             // 
@@ -171,17 +171,20 @@ namespace GUI_Logger
             // 
             // textBox1
             // 
-            this.textBox1.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(255)))), ((int)(((byte)(255)))));
+            this.textBox1.ForeColor = System.Drawing.Color.Black;
             this.textBox1.Location = new System.Drawing.Point(332, 30);
             this.textBox1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.textBox1.Name = "textBox1";
             // 
             // 
             // 
+            this.textBox1.RootElement.BorderHighlightColor = System.Drawing.Color.Black;
             this.textBox1.RootElement.ControlBounds = new System.Drawing.Rectangle(332, 30, 125, 25);
             this.textBox1.RootElement.StretchVertically = true;
-            this.textBox1.Size = new System.Drawing.Size(1328, 32);
+            this.textBox1.Size = new System.Drawing.Size(1165, 32);
             this.textBox1.TabIndex = 2;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
             this.textBox1.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtSearch_KeyPress);
             // 
             // label3
@@ -665,11 +668,39 @@ namespace GUI_Logger
             this.pictureBox2.TabIndex = 38;
             this.pictureBox2.TabStop = false;
             // 
+            // button1
+            // 
+            this.button1.BackgroundColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.button1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.button1.ButtonImage = null;
+            this.button1.ButtonStyle = XanderUI.XUIButton.Style.MaterialRounded;
+            this.button1.ButtonText = "Export";
+            this.button1.ClickBackColor = System.Drawing.SystemColors.GradientActiveCaption;
+            this.button1.ClickTextColor = System.Drawing.Color.Black;
+            this.button1.CornerRadius = 5;
+            this.button1.Font = new System.Drawing.Font("Microsoft Tai Le", 10.2F);
+            this.button1.Horizontal_Alignment = System.Drawing.StringAlignment.Center;
+            this.button1.HoverBackgroundColor = System.Drawing.SystemColors.ButtonHighlight;
+            this.button1.HoverTextColor = System.Drawing.Color.FromArgb(((int)(((byte)(65)))), ((int)(((byte)(70)))), ((int)(((byte)(75)))));
+            this.button1.ImagePosition = XanderUI.XUIButton.imgPosition.Left;
+            this.button1.Location = new System.Drawing.Point(1512, 29);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(146, 35);
+            this.button1.TabIndex = 39;
+            this.button1.TextColor = System.Drawing.Color.Black;
+            this.button1.Vertical_Alignment = System.Drawing.StringAlignment.Center;
+            this.button1.Click += new System.EventHandler(this.button1_Click_1);
+            // 
+            // backgroundWorker2
+            // 
+            this.backgroundWorker2.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker2_DoWork);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1710, 532);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.pictureBox2);
             this.Controls.Add(this.comboBox10);
             this.Controls.Add(this.comboBox9);
@@ -742,6 +773,10 @@ namespace GUI_Logger
         private System.DirectoryServices.DirectorySearcher directorySearcher1;
         private XanderUI.XUIGradientPanel xuiGradientPanel1;
         private System.Windows.Forms.PictureBox pictureBox2;
+        private XanderUI.XUIButton button1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker2;
+
+        public object Nothing { get; private set; }
     }
 }
 

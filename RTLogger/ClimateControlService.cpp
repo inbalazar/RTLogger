@@ -9,9 +9,9 @@ void ClimateControlService::StartJob()
 
 	int i = 0;
 
-	while (true)
-	{
-		if (i < 100)
+	//while (true)
+	//{
+		while (i < 100)
 		{
 			Sleep(1000);
 			log->SendLoggerRTCritical("Climate control service unable to start!");
@@ -24,7 +24,8 @@ void ClimateControlService::StartJob()
 
 			++i;
 		}
-	}
+	//}
+		Sleep(0.001);
 }
 
 ClimateControlService* ClimateControlService::GetInstance()

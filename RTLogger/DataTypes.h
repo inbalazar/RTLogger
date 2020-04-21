@@ -37,7 +37,7 @@ enum LOGGER_RT_SERVICE
 typedef struct Element_In_Q {
 	LOGGER_RT_SEVERITY* severityMsg;
 	char* textMsg;
-	uint32_t* cycleMsg;
+	uint32_t* cycle;
 } element_In_Q;
 
 typedef struct Data_Send_To_UI {
@@ -46,7 +46,7 @@ typedef struct Data_Send_To_UI {
 } data_Send_To_UI;
 
 typedef struct UDP_Data_Send {
-	uint32_t cycleMsg;
+	uint32_t cycle;
 	LOGGER_RT_SEVERITY severityMsg;
 	LOGGER_RT_SERVICE serviceMsg;
 	char textMsg[MAX_SIZE_MESSAGE];

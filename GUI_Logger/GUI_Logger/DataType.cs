@@ -1,13 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-using Telerik.WinControls;
-
-namespace GUI_Logger
+﻿namespace GUI_Logger
 {
     enum LOGGER_RT_SEVERITY
     {
@@ -30,24 +21,6 @@ namespace GUI_Logger
 
         LOGGER_RT_NUM_OF_SERVICES
     }
-
-    //struct element
-    //{
-    //    LOGGER_RT_SEVERITY[] severityMsg;
-    //    string textMsg;
-    //};
-
-    //struct dataSend
-    //{
-    //    element elementMsg;
-    //    LOGGER_RT_SERVICE serviceMsg;
-    //};
-
-    //struct udpReceivedSeverity
-    //{
-    //    LOGGER_RT_SEVERITY severityMsg;
-    //    LOGGER_RT_SERVICE serviceMsg;
-    //};
 
     public partial class DataType_cs : Telerik.WinControls.UI.RadForm
     {

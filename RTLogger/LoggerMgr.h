@@ -16,8 +16,8 @@ class LoggerMgr
 {
 public:
 	typedef struct queueStru {
-		std::atomic<unsigned int> head;
-		std::atomic<unsigned int> tail;
+		atomic<unsigned int> head;
+		atomic<unsigned int> tail;
 		unsigned int maxSize;
 		element_In_Q msgsElements;
 	} queue;
@@ -25,7 +25,7 @@ public:
 	typedef struct LoggerRTData
 	{
 		LOGGER_RT_SEVERITY eLOGGER_RT_SEVERITYFromUI;
-		LOGGER_RT_SERVICE eLoggerRTDivece;
+		LOGGER_RT_SERVICE eLoggerRTService;
 		queue* queueMsgs;
 	}stLoggerRTData;
 
@@ -52,6 +52,6 @@ public:
 private: 
 	static LoggerMgr* m_pclInstance;
 	LoggerMgr();
-	LoggerMgr(const LoggerMgr& other) {};
+	LoggerMgr(const LoggerMgr& other);
 };
 #endif // __LOGGERMGR_H
