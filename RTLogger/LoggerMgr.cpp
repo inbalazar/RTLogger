@@ -159,15 +159,19 @@ void LoggerMgr::ReceiveSeverityFromUI()
 
 void LoggerMgr::StartProcess()
 {
-	int counter = 0;
+	int counterMsg[LOGGER_RT_NUM_OF_SERVICES];
+	for (int i = 0; i < LOGGER_RT_NUM_OF_SERVICES; i++)
+		counterMsg[i] = 0;
+
 	while (true)
 	{
 		//StartCounter(); // <--- only needs called once per run
-		//cout << "Starting Timed Test" << endl;
+		//printf("Starting Timed Test\n");
 		//double start = GetCounter();
-		while (counter <= MAX_MSG_TO_SEND)
+		
+		for (int i = 0; i < LOGGER_RT_NUM_OF_SERVICES; i++)
 		{
-			for (int i = 0; i < LOGGER_RT_NUM_OF_SERVICES; i++)
+			if (counterMsg[i] <= MAX_MSG_TO_SEND)
 			{
 				if (CountQ(m_stArrLoggerRTData[i].queueMsgs) >= 0)
 				{
@@ -195,6 +199,7 @@ void LoggerMgr::StartProcess()
 						}
 
 						char* deleteMsg = Dequeue(m_stArrLoggerRTData[i].queueMsgs);
+						++counterMsg[i];
 
 						printf("\nDequeue: %s, count: %d\n", stDataSend.elementMsg.textMsg, CountQ(m_stArrLoggerRTData[i].queueMsgs));
 						printf("\nDequeue: %s, severity: %s\n", stElement.textMsg, LOGGER_RT_SEVERITY_STR[*stDataSend.elementMsg.severityMsg]);
@@ -205,11 +210,10 @@ void LoggerMgr::StartProcess()
 			}
 		}
 		Sleep(MILLISECONDS_TO_60_HZ);
-		++counter;
 
 		/*double end = GetCounter();
 		double elapsed = end - start;
-		printf("  ::: Elapsed availableKeywords(): %3.3f ms, %3.3f sec, %3.3f min\n", elapsed,
+		printf("  ::: Elapsed availableKeywords(): %3.7f ms, %3.3f sec, %3.3f min\n", elapsed,
 		elapsed / 1000.0, elapsed / 1000.0 / 60.0);*/
 	}
 }

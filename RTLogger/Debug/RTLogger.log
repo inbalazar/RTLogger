@@ -1,8 +1,4 @@
-﻿  ClimateControlService.cpp
-  GasService.cpp
-C:\Users\inbalazar\source\repos\RTLogger\RTLogger\ClimateControlService.cpp(28,9): warning C4244: 'argument': conversion from 'double' to 'DWORD', possible loss of data
-  TirePressureService.cpp
-C:\Users\inbalazar\source\repos\RTLogger\RTLogger\GasService.cpp(28,9): warning C4244: 'argument': conversion from 'double' to 'DWORD', possible loss of data
-  Generating Code...
-C:\Users\inbalazar\source\repos\RTLogger\RTLogger\TirePressureService.cpp(28,9): warning C4244: 'argument': conversion from 'double' to 'DWORD', possible loss of data
-  RTLogger.vcxproj -> C:\Users\inbalazar\source\repos\RTLogger\Debug\CCU.exe
+﻿  LoggerMgr.cpp
+C:\Users\inbal\source\repos\RTLogger\RTLogger\LoggerMgr.cpp(178,24): warning C4018:  '<': signed/unsigned mismatch
+C:\Users\inbal\source\repos\RTLogger\RTLogger\LoggerMgr.cpp(212,9): warning C4244:  'argument': conversion from 'double' to 'DWORD', possible loss of data
+  RTLogger.vcxproj -> C:\Users\inbal\source\repos\RTLogger\Debug\CCU.exe
