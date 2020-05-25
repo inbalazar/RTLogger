@@ -165,9 +165,9 @@ void LoggerMgr::StartProcess()
 
 	while (true)
 	{
-		//StartCounter(); // <--- only needs called once per run
-		//printf("Starting Timed Test\n");
-		//double start = GetCounter();
+		StartCounter(); // <--- only needs called once per run
+		printf("Starting Timed Test\n");
+		double start = GetCounter();
 		
 		for (int i = 0; i < LOGGER_RT_NUM_OF_SERVICES; i++)
 		{
@@ -211,10 +211,10 @@ void LoggerMgr::StartProcess()
 		}
 		Sleep(MILLISECONDS_TO_60_HZ);
 
-		/*double end = GetCounter();
+		double end = GetCounter();
 		double elapsed = end - start;
 		printf("  ::: Elapsed availableKeywords(): %3.7f ms, %3.3f sec, %3.3f min\n", elapsed,
-		elapsed / 1000.0, elapsed / 1000.0 / 60.0);*/
+		elapsed / 1000.0, elapsed / 1000.0 / 60.0);
 	}
 }
 

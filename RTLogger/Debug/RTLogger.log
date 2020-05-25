@@ -1,4 +1,15 @@
-﻿  LoggerMgr.cpp
-C:\Users\inbal\source\repos\RTLogger\RTLogger\LoggerMgr.cpp(178,24): warning C4018:  '<': signed/unsigned mismatch
-C:\Users\inbal\source\repos\RTLogger\RTLogger\LoggerMgr.cpp(212,9): warning C4244:  'argument': conversion from 'double' to 'DWORD', possible loss of data
-  RTLogger.vcxproj -> C:\Users\inbal\source\repos\RTLogger\Debug\CCU.exe
+﻿  ClimateControlService.cpp
+  GasService.cpp
+  Logger.cpp
+C:\Users\inbal\source\repos\RTLogger2\RTLogger\Logger.cpp(180,8): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
+C:\Users\inbal\source\repos\RTLogger2\RTLogger\Logger.cpp(185,16): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
+C:\Users\inbal\source\repos\RTLogger2\RTLogger\Logger.cpp(187,16): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
+  LoggerMgr.cpp
+C:\Users\inbal\source\repos\RTLogger2\RTLogger\Logger.cpp(181,9): warning C4101:  'str': unreferenced local variable
+C:\Users\inbal\source\repos\RTLogger2\RTLogger\LoggerMgr.cpp(178,24): warning C4018:  '<': signed/unsigned mismatch
+  Main.cpp
+C:\Users\inbal\source\repos\RTLogger2\RTLogger\LoggerMgr.cpp(212,9): warning C4244:  'argument': conversion from 'double' to 'DWORD', possible loss of data
+  TirePressureService.cpp
+  Generating Code...
+C:\Users\inbal\source\repos\RTLogger2\RTLogger\Main.cpp(28,9): warning C4244:  'argument': conversion from 'double' to 'DWORD', possible loss of data
+  RTLogger.vcxproj -> C:\Users\inbal\source\repos\RTLogger2\Debug\CCU.exe

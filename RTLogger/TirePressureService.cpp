@@ -7,25 +7,19 @@ void TirePressureService::StartJob()
 	log = Logger::GetLogger();
 	log->Init("TirePressure");
 
-	int i = 0;
 
-	//while (true)
-	//{
-		while (i < 100)
-		{
-			Sleep(1000);
-			log->SendLoggerRTCritical("Tire pressure service unable to start!");
-			log->SendLoggerRTError("Tire pressure service unable to start!");
-			log->SendLoggerRTWarn("Tire pressure service unable to start!");
-			log->SendLoggerRTLog("Tire pressure service unable to start!");
-			log->SendLoggerRTFlow("Tire pressure service unable to start!");
-			log->SendLoggerRTInfo("Tire pressure service unable to start!");
-			log->SendLoggerRTDebug("Tire pressure service unable to start!");
-
-			++i;
-		}
-	//}
-		Sleep(0.001);
+	while (true)
+	{
+		Sleep(1000);
+		log->SendLoggerRTCritical("Tire pressure service unable to start!");
+		log->SendLoggerRTError("Tire pressure service unable to start!");
+		log->SendLoggerRTWarn("Tire pressure service unable to start!");
+		log->SendLoggerRTLog("Tire pressure service unable to start!");
+		log->SendLoggerRTFlow("Tire pressure service unable to start!");
+		log->SendLoggerRTInfo("Tire pressure service unable to start!");
+		log->SendLoggerRTDebug("Tire pressure service unable to start!");			
+	}
+		
 }
 
 TirePressureService* TirePressureService::GetInstance()
