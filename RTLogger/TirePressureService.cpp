@@ -17,7 +17,8 @@ void TirePressureService::StartJob()
 		log->SendLoggerRTLog("Tire pressure service unable to start!");
 		log->SendLoggerRTFlow("Tire pressure service unable to start!");
 		log->SendLoggerRTInfo("Tire pressure service unable to start!");
-		log->SendLoggerRTDebug("Tire pressure service unable to start!");			
+		log->SendLoggerRTDebug("Tire pressure service unable to start!");
+		Sleep(1000);
 	}
 		
 }

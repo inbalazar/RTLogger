@@ -17,6 +17,7 @@ void GasService::StartJob()
 		log->SendLoggerRTFlow("Gas service unable to start!");
 		log->SendLoggerRTInfo("Gas service unable to start!");
 		log->SendLoggerRTDebug("Gas service unable to start!");
+		Sleep(1000);
 	}
 }
 

@@ -17,6 +17,7 @@ void ClimateControlService::StartJob()
 			log->SendLoggerRTFlow("Climate control service unable to start!");
 			log->SendLoggerRTInfo("Climate control service unable to start!");
 			log->SendLoggerRTDebug("Climate control service unable to start!");
+			Sleep(1000);
 	}
 }
 
