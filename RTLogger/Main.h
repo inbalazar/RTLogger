@@ -1,6 +1,7 @@
 #ifndef MAIN_H_
 #define MAIN_H_
 
+//#ifdef WIN32
 #include <iostream>
 #include <string>
 #include <ctime>
@@ -8,7 +9,9 @@
 #include <time.h>
 #include <iomanip>
 #include <sstream>
-#include <windows.h>
+//#else
+
+
 #include "Logger.h"
 #include "GasService.h"
 #include "ClimateControlService.h"

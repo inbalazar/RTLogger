@@ -1,12 +1,19 @@
 #ifndef __LOGGER_H
 #define __LOGGER_H
 
+#ifdef WIN32
+	#include <cstdio> 
+	#include <cwchar>
+	#include <stdio.h>
+	#include <wchar.h>
+	#include <windows.h>
+#else
+	#include <unistd.h>
+	#include <stdlib.h>
+	#include <stdio.h>
+	#include <string.h>
+#endif
 #include "DataTypes.h"
-#include <cstdio> 
-#include <cwchar>
-#include <stdio.h>
-#include <wchar.h>
-#include <windows.h>
 #include "LoggerMgr.h"
 
 #pragma warning(disable:4996)
