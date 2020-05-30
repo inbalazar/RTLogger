@@ -184,7 +184,8 @@ void Logger::PrintfFormat(const char* msg, char* buffer, char* arrBuffer, va_lis
 
 			int tmpInt1 = tmpVal;                  // Get the integer (678).
 			float tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
-			int tmpInt2 = trunc(tmpFrac * 10000);  // Turn into integer (123).
+			//int tmpInt2 = trunc(tmpFrac * 10000);  // Turn into integer (123).
+			int tmpInt2 = tmpFrac * 10000;
 
 			sprintf(buffer, "%s%d.%04d", tmpSign, tmpInt1, tmpInt2);
 		}
