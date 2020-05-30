@@ -6,42 +6,42 @@ const char* LoggerMgr::LOGGER_RT_SEVERITY_STR[] = { "CRITICAL", "ERROR", "WARN",
 const char* LoggerMgr::LOGGER_RT_SERVICE_STR[] = { "Gas", "ClimateControl", "TirePressure" };
 
 //Get time
-double PCFreq = 0.0;
-LONGLONG CounterStart = 0;
-
-void StartCounter()
-{
-	LARGE_INTEGER li;
-	if (!QueryPerformanceFrequency(&li))
-		cout << "QueryPerformanceFrequency failed!\n";
-
-	PCFreq = double(li.QuadPart) / 1000.0;
-
-	QueryPerformanceCounter(&li);
-	CounterStart = li.QuadPart;
-}
-
-double GetCounter()
-{
-	LARGE_INTEGER li;
-	QueryPerformanceCounter(&li);
-	return double(li.QuadPart - CounterStart) / PCFreq;
-}
-
-void TestTimer()
-{
-	StartCounter(); // <--- only needs called once per run
-
-	cout << "Starting Timed Test" << endl;
-	double start = GetCounter();
-
-	// Test long/slow artifact here: should take at least > 10us, or call many times in a loop until it does
-
-	double end = GetCounter();
-	double elapsed = end - start;
-	printf("  ::: Elapsed availableKeywords(): %3.3f ms, %3.3f sec, %3.3f min\n", elapsed,
-		elapsed / 1000.0, elapsed / 1000.0 / 60.0);
-}
+//double PCFreq = 0.0;
+//LONG CounterStart = 0;
+//
+//void StartCounter()
+//{
+//	LARGE_INTEGER li;
+//	if (!QueryPerformanceFrequency(&li))
+//		cout << "QueryPerformanceFrequency failed!\n";
+//
+//	PCFreq = double(li.QuadPart) / 1000.0;
+//
+//	QueryPerformanceCounter(&li);
+//	CounterStart = li.QuadPart;
+//}
+//
+//double GetCounter()
+//{
+//	LARGE_INTEGER li;
+//	QueryPerformanceCounter(&li);
+//	return double(li.QuadPart - CounterStart) / PCFreq;
+//}
+//
+//void TestTimer()
+//{
+//	StartCounter(); // <--- only needs called once per run
+//
+//	cout << "Starting Timed Test" << endl;
+//	double start = GetCounter();
+//
+//	// Test long/slow artifact here: should take at least > 10us, or call many times in a loop until it does
+//
+//	double end = GetCounter();
+//	double elapsed = end - start;
+//	printf("  ::: Elapsed availableKeywords(): %3.3f ms, %3.3f sec, %3.3f min\n", elapsed,
+//		elapsed / 1000.0, elapsed / 1000.0 / 60.0);
+//}
 //
 
 LoggerMgr::LoggerMgr()
@@ -165,9 +165,9 @@ void LoggerMgr::StartProcess()
 
 	while (true)
 	{
-		StartCounter(); // <--- only needs called once per run
-		printf("Starting Timed Test\n");
-		double start = GetCounter();
+		//StartCounter(); // <--- only needs called once per run
+		//printf("Starting Timed Test\n");
+		//double start = GetCounter();
 		
 		for (int i = 0; i < LOGGER_RT_NUM_OF_SERVICES; i++)
 		{
@@ -212,10 +212,10 @@ void LoggerMgr::StartProcess()
 		
 		(MILLISECONDS_TO_60_HZ);
 
-		double end = GetCounter();
+		/*double end = GetCounter();
 		double elapsed = end - start;
 		printf("  ::: Elapsed availableKeywords(): %3.7f ms, %3.3f sec, %3.3f min\n", elapsed,
-		elapsed / 1000.0, elapsed / 1000.0 / 60.0);
+		elapsed / 1000.0, elapsed / 1000.0 / 60.0);*/
 	}
 }
 
