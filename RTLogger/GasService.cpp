@@ -9,7 +9,12 @@ void GasService::StartJob()
 
 	while (true)
 	{
+
+#ifdef WIN32
 		Sleep(1000);
+#else 
+		sleep(1000);
+#endif
 		log->SendLoggerRTCritical("Gas service unable to start!");
 		log->SendLoggerRTError("Gas service unable to start!");
 		log->SendLoggerRTWarn("Gas service unable to start!");
@@ -17,7 +22,12 @@ void GasService::StartJob()
 		log->SendLoggerRTFlow("Gas service unable to start!");
 		log->SendLoggerRTInfo("Gas service unable to start!");
 		log->SendLoggerRTDebug("Gas service unable to start!");
+
+#ifdef WIN32
 		Sleep(1000);
+#else 
+		sleep(1000);
+#endif
 	}
 }
 

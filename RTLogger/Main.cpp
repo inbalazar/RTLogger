@@ -25,7 +25,11 @@ int main()
 	while (true)
 	{
 		cycleTime += 1;
-		Sleep(0.001);
+		#ifdef WIN32
+			Sleep(0.001);
+		#else 
+			sleep(0.001);
+		#endif
 	}
 	return 0;
 }

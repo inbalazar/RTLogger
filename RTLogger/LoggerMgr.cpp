@@ -209,7 +209,8 @@ void LoggerMgr::StartProcess()
 				}
 			}
 		}
-		Sleep(MILLISECONDS_TO_60_HZ);
+		
+		(MILLISECONDS_TO_60_HZ);
 
 		double end = GetCounter();
 		double elapsed = end - start;

@@ -10,7 +10,12 @@ void TirePressureService::StartJob()
 
 	while (true)
 	{
+		
+	#ifdef WIN32
 		Sleep(1000);
+#else 
+		sleep(1000);
+#endif
 		log->SendLoggerRTCritical("Tire pressure service unable to start!");
 		log->SendLoggerRTError("Tire pressure service unable to start!");
 		log->SendLoggerRTWarn("Tire pressure service unable to start!");
@@ -18,7 +23,12 @@ void TirePressureService::StartJob()
 		log->SendLoggerRTFlow("Tire pressure service unable to start!");
 		log->SendLoggerRTInfo("Tire pressure service unable to start!");
 		log->SendLoggerRTDebug("Tire pressure service unable to start!");
+
+#ifdef WIN32
 		Sleep(1000);
+#else 
+		sleep(1000);
+#endif
 	}
 		
 }
