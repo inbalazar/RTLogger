@@ -39,6 +39,7 @@ public:
 private:
 	static Logger* m_pclLoggerInstance;
 	LoggerMgr::stLoggerRTData* p_stLoggerRTData;
+
 	LoggerMgr* logMgr;
 };
 

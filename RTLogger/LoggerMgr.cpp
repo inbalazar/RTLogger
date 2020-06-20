@@ -47,7 +47,7 @@ const char* LoggerMgr::LOGGER_RT_SERVICE_STR[] = { "Gas", "ClimateControl", "Tir
 LoggerMgr::LoggerMgr()
 {
 	m_stArrLoggerRTData->eLoggerRTService;
-	m_stArrLoggerRTData->eLOGGER_RT_SEVERITYFromUI;;
+	m_stArrLoggerRTData->eLOGGER_RT_SEVERITYFromUI;
 	m_stArrLoggerRTData->queueMsgs = NULL;
 	studp_Received_Severity.serviceMsg = LOGGER_RT_GAS_SERVICE;
 	studp_Received_Severity.severityMsg = LOGGER_RT_SEVERITY_CRITICAL;
@@ -176,7 +176,7 @@ void LoggerMgr::StartProcess()
 				if (CountQ(m_stArrLoggerRTData[i].queueMsgs) >= 0)
 				{
 					for (int j = 0; j < CountQ(m_stArrLoggerRTData[i].queueMsgs); j++)
-					{
+					{	
 						char* msg =
 							&m_stArrLoggerRTData[i].queueMsgs->msgsElements.textMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
 						LOGGER_RT_SEVERITY severity =
@@ -205,13 +205,17 @@ void LoggerMgr::StartProcess()
 						printf("\nDequeue: %s, severity: %s\n", stElement.textMsg, LOGGER_RT_SEVERITY_STR[*stDataSend.elementMsg.severityMsg]);
 						printf("\nDequeue: %s, service: %s\n", stElement.textMsg, LOGGER_RT_SERVICE_STR[stDataSend.serviceMsg]);
 						printf("\nDequeue: %s, cycle: %d\n", stElement.textMsg, *stDataSend.elementMsg.cycle);
+					
 					}
 				}
 			}
 		}
 		
-		(MILLISECONDS_TO_60_HZ);
-
+#ifdef WIN32
+		Sleep(MILLISECONDS_TO_60_HZ);
+#else 
+		sleep(SECONDS_TO_60_HZ0);
+#endif
 		/*double end = GetCounter();
 		double elapsed = end - start;
 		printf("  ::: Elapsed availableKeywords(): %3.7f ms, %3.3f sec, %3.3f min\n", elapsed,
@@ -221,25 +225,25 @@ void LoggerMgr::StartProcess()
 
 LoggerMgr::stLoggerRTData* LoggerMgr::Registerservice(const char* serviceName)
 {
-	if (serviceName == "Gas")
+	const char* tempServiceName = serviceName;
+	if (tempServiceName == "Gas")
 	{
 		m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE].eLoggerRTService = LOGGER_RT_GAS_SERVICE;
 		m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
 		return &m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE];
 	}
-	else if (serviceName == "ClimateControl")
+	else if (tempServiceName == "ClimateControl")
 	{
 		m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE].eLoggerRTService = LOGGER_RT_CLIMATE_CONTROL_SERVICE;
 		m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
 		return &m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE];
 	}
-	else if (serviceName == "TirePressure")
+	else if (tempServiceName == "TirePressure")
 	{
 		m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE].eLoggerRTService = LOGGER_RT_TIRE_PRESSURE_SERVICE;
 		m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
 		return &m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE];
 	}
-
 	return NULL;
 }
 

@@ -3,6 +3,7 @@
 
 Logger* Logger::m_pclLoggerInstance;
 
+
 void Logger::SendLoggerRTCritical(const char* msg, ...)
 {
 	if (p_stLoggerRTData->eLOGGER_RT_SEVERITYFromUI >= LOGGER_RT_SEVERITY_CRITICAL)
@@ -20,6 +21,7 @@ void Logger::SendLoggerRTCritical(const char* msg, ...)
 		int ret = logMgr->Enqueue(p_stLoggerRTData->queueMsgs, arrBuffer, LOGGER_RT_SEVERITY_CRITICAL, GetCycle());
 		printf("\nEnqueue: %d, count: %d, msg: %s, cycle: %d \n", ret, logMgr->CountQ(p_stLoggerRTData->queueMsgs), arrBuffer, GetCycle());
 	}
+
 }
 
 void Logger::SendLoggerRTError(const char* msg, ...)

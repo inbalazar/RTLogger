@@ -1,4 +1,11 @@
+
 #include "Main.h"
+#include <stdio.h>
+#ifdef WIN32
+	#include <stdlib.h>
+#else
+	#include <pthread.h>
+#endif
 
 uint32_t cycleTime;
 
@@ -9,8 +16,7 @@ int main()
 	Logger* log = Logger::GetLogger();
 
 	LoggerMgr* logMgr = LoggerMgr::GetInstance();
-	thread logMgrThread(&LoggerMgr::StartProcess, logMgr);
-	
+	thread logMgrThread(&LoggerMgr::StartProcess, logMgr); 
 	thread logMgrThreadReceive(&LoggerMgr::ReceiveSeverityFromUI, logMgr);
 
 	GasService* gasService = GasService::GetInstance();
@@ -28,7 +34,7 @@ int main()
 		#ifdef WIN32
 			Sleep(0.001);
 		#else 
-			sleep(0.001);
+			sleep(0.000001);
 		#endif
 	}
 	return 0;

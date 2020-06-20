@@ -13,20 +13,20 @@ void ClimateControlService::StartJob()
 #ifdef WIN32
 		Sleep(1000);
 #else 
-		sleep(1000);
+		sleep(1);
 #endif
-			log->SendLoggerRTCritical("Climate control service unable to start!");
-			log->SendLoggerRTError("Climate control service unable to start!");
-			log->SendLoggerRTWarn("Climate control service unable to start!");
-			log->SendLoggerRTLog("Climate control service unable to start!");
-			log->SendLoggerRTFlow("Climate control service unable to start!");
-			log->SendLoggerRTInfo("Climate control service unable to start!");
-			log->SendLoggerRTDebug("Climate control service unable to start!");
+			log->SendLoggerRTCritical("Climate control service enable to start!");
+			log->SendLoggerRTError("Climate control service enable to start!");
+			log->SendLoggerRTWarn("Climate control service enable to start!");
+			log->SendLoggerRTLog("Climate control service enable to start!");
+			log->SendLoggerRTFlow("Climate control service enable to start!");
+			log->SendLoggerRTInfo("Climate control service enable to start!");
+			log->SendLoggerRTDebug("Climate control service enable to start!");
 
 #ifdef WIN32
 			Sleep(1000);
 #else 
-			sleep(1000);
+			sleep(1);
 #endif
 	}
 }
