@@ -1,16 +1,4 @@
-﻿  ClimateControlService.cpp
-  GasService.cpp
-  Main.cpp
-  DatagramSocket.cpp
-  Logger.cpp
-C:\Users\inbal\source\repos\RTLogger2\RTLogger\Main.cpp(35,10): warning C4244:  'argument': conversion from 'double' to 'DWORD', possible loss of data
-C:\Users\inbal\source\repos\RTLogger2\RTLogger\Logger.cpp(182,8): warning C4244:  '=': conversion from 'double' to 'float', possible loss of data
-C:\Users\inbal\source\repos\RTLogger2\RTLogger\Logger.cpp(187,16): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
-C:\Users\inbal\source\repos\RTLogger2\RTLogger\Logger.cpp(190,16): warning C4244:  'initializing': conversion from 'float' to 'int', possible loss of data
-  LoggerMgr.cpp
-C:\Users\inbal\source\repos\RTLogger2\RTLogger\Logger.cpp(183,9): warning C4101:  'str': unreferenced local variable
+﻿  LoggerMgr.cpp
 C:\Users\inbal\source\repos\RTLogger2\RTLogger\LoggerMgr.cpp(178,24): warning C4018:  '<': signed/unsigned mismatch
-  TirePressureService.cpp
-  Generating Code...
 C:\Users\inbal\source\repos\RTLogger2\RTLogger\LoggerMgr.cpp(215,9): warning C4244:  'argument': conversion from 'double' to 'DWORD', possible loss of data
   RTLogger.vcxproj -> C:\Users\inbal\source\repos\RTLogger2\Debug\CCU.exe

@@ -214,7 +214,7 @@ void LoggerMgr::StartProcess()
 #ifdef WIN32
 		Sleep(MILLISECONDS_TO_60_HZ);
 #else 
-		sleep(SECONDS_TO_60_HZ0);
+		sleep(SECONDS_TO_60_HZ);
 #endif
 		/*double end = GetCounter();
 		double elapsed = end - start;
@@ -225,25 +225,26 @@ void LoggerMgr::StartProcess()
 
 LoggerMgr::stLoggerRTData* LoggerMgr::Registerservice(const char* serviceName)
 {
-	const char* tempServiceName = serviceName;
-	if (tempServiceName == "Gas")
+	if (strcmp(serviceName, "Gas") == 0)
 	{
 		m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE].eLoggerRTService = LOGGER_RT_GAS_SERVICE;
 		m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
 		return &m_stArrLoggerRTData[LOGGER_RT_GAS_SERVICE];
 	}
-	else if (tempServiceName == "ClimateControl")
+
+	else if (strcmp(serviceName, "ClimateControl") == 0)
 	{
 		m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE].eLoggerRTService = LOGGER_RT_CLIMATE_CONTROL_SERVICE;
 		m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
 		return &m_stArrLoggerRTData[LOGGER_RT_CLIMATE_CONTROL_SERVICE];
 	}
-	else if (tempServiceName == "TirePressure")
+	else if (strcmp(serviceName, "TirePressure") == 0)
 	{
 		m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE].eLoggerRTService = LOGGER_RT_TIRE_PRESSURE_SERVICE;
 		m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE].eLOGGER_RT_SEVERITYFromUI = LOGGER_RT_SEVERITY_CRITICAL;
 		return &m_stArrLoggerRTData[LOGGER_RT_TIRE_PRESSURE_SERVICE];
 	}
+
 	return NULL;
 }
 
