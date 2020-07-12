@@ -46,6 +46,7 @@ typedef struct Data_Send_To_UI {
 	LOGGER_RT_SERVICE serviceMsg;
 } data_Send_To_UI;
 
+//The final struct sends to UI by UDP
 typedef struct UDP_Data_Send {
 	uint32_t cycle;
 	LOGGER_RT_SEVERITY severityMsg;

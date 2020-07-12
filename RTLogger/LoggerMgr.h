@@ -38,13 +38,15 @@ public:
 	static const char* LOGGER_RT_SERVICE_STR[LOGGER_RT_NUM_OF_SERVICES];
 
 	static LoggerMgr* GetInstance();
+
 	~LoggerMgr() {};
+
 	void SendToLoggerDisplay(data_Send_To_UI* msg);
 	void ReceiveSeverityFromUI();
 	void StartProcess();
 	stLoggerRTData* Registerservice(const char* serviceName);
 
-	//Lockless
+	//Lockless algorithm
 	queue* CreateQueue(int maxSize);
 	void FreeQueue(queue* q);
 	int Enqueue(queue* q, char* element, LOGGER_RT_SEVERITY eSeverity, uint32_t cycleMsg);
@@ -55,5 +57,8 @@ private:
 	static LoggerMgr* m_pclInstance;
 	LoggerMgr();
 	LoggerMgr(const LoggerMgr& other);
+	thread logMgrThread;
+	thread logMgrThreadReceive;
+
 };
 #endif // __LOGGERMGR_H

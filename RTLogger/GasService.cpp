@@ -9,12 +9,6 @@ void GasService::StartJob()
 
 	while (true)
 	{
-		
-#ifdef WIN32
-		Sleep(1000);
-#else 
-		sleep(1);
-#endif
 		log->SendLoggerRTCritical("Gas service enable to start!");
 		log->SendLoggerRTError("Gas service enable to start!");
 		log->SendLoggerRTWarn("Gas service enable to start!");
@@ -25,9 +19,9 @@ void GasService::StartJob()
 		
 
 #ifdef WIN32
-		Sleep(1000);
+		Sleep(2000);
 #else 
-		sleep(1);
+		sleep(2);
 #endif
 	}
 }

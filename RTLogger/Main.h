@@ -15,9 +15,7 @@
 #include "TirePressureService.h"
 
 using namespace std;
-//using namespace std::chrono;
 
 uint32_t GetCycle();
-//string time_in_HH_MM_SS_MMM();
 
 #endif //MAIN_H_

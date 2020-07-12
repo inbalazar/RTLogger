@@ -5,44 +5,29 @@ LoggerMgr* LoggerMgr::m_pclInstance;
 const char* LoggerMgr::LOGGER_RT_SEVERITY_STR[] = { "CRITICAL", "ERROR", "WARN", "LOG", "FLOW", "INFO", "DEBUG" };
 const char* LoggerMgr::LOGGER_RT_SERVICE_STR[] = { "Gas", "ClimateControl", "TirePressure" };
 
-//Get time
-//double PCFreq = 0.0;
-//LONG CounterStart = 0;
-//
-//void StartCounter()
-//{
-//	LARGE_INTEGER li;
-//	if (!QueryPerformanceFrequency(&li))
-//		cout << "QueryPerformanceFrequency failed!\n";
-//
-//	PCFreq = double(li.QuadPart) / 1000.0;
-//
-//	QueryPerformanceCounter(&li);
-//	CounterStart = li.QuadPart;
-//}
-//
-//double GetCounter()
-//{
-//	LARGE_INTEGER li;
-//	QueryPerformanceCounter(&li);
-//	return double(li.QuadPart - CounterStart) / PCFreq;
-//}
-//
-//void TestTimer()
-//{
-//	StartCounter(); // <--- only needs called once per run
-//
-//	cout << "Starting Timed Test" << endl;
-//	double start = GetCounter();
-//
-//	// Test long/slow artifact here: should take at least > 10us, or call many times in a loop until it does
-//
-//	double end = GetCounter();
-//	double elapsed = end - start;
-//	printf("  ::: Elapsed availableKeywords(): %3.3f ms, %3.3f sec, %3.3f min\n", elapsed,
-//		elapsed / 1000.0, elapsed / 1000.0 / 60.0);
-//}
-//
+////Get time
+double PCFreq = 0.0;
+LONG CounterStart = 0;
+
+void StartCounter()
+{
+	LARGE_INTEGER li;
+	if (!QueryPerformanceFrequency(&li))
+		cout << "QueryPerformanceFrequency failed!\n";
+
+	PCFreq = double(li.QuadPart) / 1000.0;
+
+	QueryPerformanceCounter(&li);
+	CounterStart = li.QuadPart;
+}
+
+double GetCounter()
+{
+	LARGE_INTEGER li;
+	QueryPerformanceCounter(&li);
+	return double(li.QuadPart - CounterStart) / PCFreq;
+}
+////
 
 LoggerMgr::LoggerMgr()
 {
@@ -56,6 +41,9 @@ LoggerMgr::LoggerMgr()
 	{
 		m_stArrLoggerRTData[i].queueMsgs = CreateQueue(100);
 	}
+	// Init LoggerMgr threads
+	logMgrThread = thread(&LoggerMgr::StartProcess, this);
+	logMgrThreadReceive= thread(&LoggerMgr::ReceiveSeverityFromUI, this);
 }
 
 LoggerMgr::queue* LoggerMgr::CreateQueue(int maxSize)
@@ -66,11 +54,12 @@ LoggerMgr::queue* LoggerMgr::CreateQueue(int maxSize)
 	q->tail = 0;
 	q->maxSize = maxSize + 1;
 	unsigned int charArrSize = q->maxSize * MAX_ELEMENT_SIZE;
+	
 	q->msgsElements.textMsg = new char[charArrSize];
 	memset(q->msgsElements.textMsg, 0, charArrSize);
-
 	q->msgsElements.severityMsg = new LOGGER_RT_SEVERITY[charArrSize];
 	q->msgsElements.cycle = new uint32_t[charArrSize];
+	
 	return q;
 }
 
@@ -111,10 +100,12 @@ char* LoggerMgr::Dequeue(LoggerMgr::queue* q)
 
 unsigned int LoggerMgr::CountQ(LoggerMgr::queue* q)
 {
-	if (q->head <= q->tail) {
+	if (q->head <= q->tail) 
+	{
 		return q->tail - q->head;
 	}
-	else {
+	else 
+	{
 		return q->maxSize - (q->head - q->tail);
 	}
 }
@@ -165,13 +156,13 @@ void LoggerMgr::StartProcess()
 
 	while (true)
 	{
-		//StartCounter(); // <--- only needs called once per run
+		StartCounter();
 		//printf("Starting Timed Test\n");
-		//double start = GetCounter();
+		double start = GetCounter();
 		
 		for (int i = 0; i < LOGGER_RT_NUM_OF_SERVICES; i++)
 		{
-			if (counterMsg[i] <= MAX_MSG_TO_SEND)
+			if (counterMsg[i] <= MAX_MSG_TO_SEND) //counter msgs until MAX_MSG_TO_SEND each service
 			{
 				if (CountQ(m_stArrLoggerRTData[i].queueMsgs) >= 0)
 				{
@@ -210,16 +201,22 @@ void LoggerMgr::StartProcess()
 				}
 			}
 		}
+
+		double endLoopAction = GetCounter();
+		double DeltaTime = endLoopAction - start;
+		/*printf("  ::: DeltaTime availableKeywords(): %3.7f ms, %3.3f sec, %3.3f min\n", DeltaTime,
+			DeltaTime / 1000.0, DeltaTime / 1000.0 / 60.0);*/
 		
 #ifdef WIN32
-		Sleep(MILLISECONDS_TO_60_HZ);
+		Sleep(MILLISECONDS_TO_60_HZ- DeltaTime);
 #else 
-		sleep(SECONDS_TO_60_HZ);
+		sleep(SECONDS_TO_60_HZ- (DeltaTime / 1000.0));
 #endif
+	
 		/*double end = GetCounter();
 		double elapsed = end - start;
 		printf("  ::: Elapsed availableKeywords(): %3.7f ms, %3.3f sec, %3.3f min\n", elapsed,
-		elapsed / 1000.0, elapsed / 1000.0 / 60.0);*/
+			elapsed / 1000.0, elapsed / 1000.0 / 60.0);*/
 	}
 }
 

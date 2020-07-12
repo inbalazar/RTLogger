@@ -16,9 +16,8 @@ int main()
 	Logger* log = Logger::GetLogger();
 
 	LoggerMgr* logMgr = LoggerMgr::GetInstance();
-	thread logMgrThread(&LoggerMgr::StartProcess, logMgr); 
-	thread logMgrThreadReceive(&LoggerMgr::ReceiveSeverityFromUI, logMgr);
 
+	// Init system services 
 	GasService* gasService = GasService::GetInstance();
 	thread gasServiceThread(&GasService::StartJob, gasService);
 
@@ -28,9 +27,11 @@ int main()
 	TirePressureService* tirePressureService = TirePressureService::GetInstance();
 	thread tirePressureServiceThread(&TirePressureService::StartJob, tirePressureService);
 
+	// Main loop of CCU- demo of an app that do action that takes time
 	while (true)
 	{
 		cycleTime += 1;
+
 		#ifdef WIN32
 			Sleep(0.001);
 		#else 
@@ -44,19 +45,4 @@ uint32_t GetCycle()
 {
 	return cycleTime;
 }
-
-//string time_in_HH_MM_SS_MMM()
-//{
-//	auto now = system_clock::now();
-//	auto ms = duration_cast<milliseconds>(now.time_since_epoch()) % 1000;
-//	auto timer = system_clock::to_time_t(now);
-//	tm bt = *localtime(&timer);
-//
-//	ostringstream oss;
-//
-//	oss << put_time(&bt, "%H:%M:%S"); // HH:MM:SS
-//	oss << '.' << setfill('0') << setw(3) << ms.count();
-//
-//	return oss.str();
-//}
 
