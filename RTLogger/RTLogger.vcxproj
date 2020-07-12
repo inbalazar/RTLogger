@@ -171,6 +171,9 @@
     <ClInclude Include="LoggerMgr.h" />
     <ClInclude Include="TirePressureService.h" />
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="README.txt" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
