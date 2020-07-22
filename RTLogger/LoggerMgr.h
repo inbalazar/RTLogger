@@ -7,6 +7,7 @@
 #include <atomic>
 #include <thread> 
 #include "DataTypes.h"
+#include <chrono>
 
 #pragma comment(lib, "Ws2_32.lib")
 //#define _CRT_SECURE_NO_WARNINGS

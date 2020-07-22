@@ -10,7 +10,7 @@ using namespace std;
 #define MAX_ELEMENT_SIZE 50 + 1
 #define MAX_MSG_TO_SEND 100
 #define MILLISECONDS_TO_60_HZ 16.666666666667
-#define SECONDS_TO_60_HZ 0.016666666666667
+#define MICROSECONDS_TO_60_HZ 16666.6666666669989
 
 
 enum LOGGER_RT_SEVERITY
@@ -46,7 +46,7 @@ typedef struct Data_Send_To_UI {
 	LOGGER_RT_SERVICE serviceMsg;
 } data_Send_To_UI;
 
-//The final struct sends to UI by UDP
+//Final struct sends to UI by UDP
 typedef struct UDP_Data_Send {
 	uint32_t cycle;
 	LOGGER_RT_SEVERITY severityMsg;

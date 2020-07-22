@@ -18,9 +18,9 @@ void ClimateControlService::StartJob()
 		log->SendLoggerRTDebug("Climate control service enable to start!");
 
 #ifdef WIN32
-			Sleep(2000);
+		Sleep(2000);
 #else 
-			sleep(2);
+		usleep(2000000);
 #endif
 	}
 }

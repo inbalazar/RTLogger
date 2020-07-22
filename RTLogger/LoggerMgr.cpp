@@ -5,29 +5,6 @@ LoggerMgr* LoggerMgr::m_pclInstance;
 const char* LoggerMgr::LOGGER_RT_SEVERITY_STR[] = { "CRITICAL", "ERROR", "WARN", "LOG", "FLOW", "INFO", "DEBUG" };
 const char* LoggerMgr::LOGGER_RT_SERVICE_STR[] = { "Gas", "ClimateControl", "TirePressure" };
 
-////Get time
-double PCFreq = 0.0;
-LONG CounterStart = 0;
-
-void StartCounter()
-{
-	LARGE_INTEGER li;
-	if (!QueryPerformanceFrequency(&li))
-		cout << "QueryPerformanceFrequency failed!\n";
-
-	PCFreq = double(li.QuadPart) / 1000.0;
-
-	QueryPerformanceCounter(&li);
-	CounterStart = li.QuadPart;
-}
-
-double GetCounter()
-{
-	LARGE_INTEGER li;
-	QueryPerformanceCounter(&li);
-	return double(li.QuadPart - CounterStart) / PCFreq;
-}
-////
 
 LoggerMgr::LoggerMgr()
 {
@@ -43,23 +20,23 @@ LoggerMgr::LoggerMgr()
 	}
 	// Init LoggerMgr threads
 	logMgrThread = thread(&LoggerMgr::StartProcess, this);
-	logMgrThreadReceive= thread(&LoggerMgr::ReceiveSeverityFromUI, this);
+	logMgrThreadReceive = thread(&LoggerMgr::ReceiveSeverityFromUI, this);
 }
 
 LoggerMgr::queue* LoggerMgr::CreateQueue(int maxSize)
 {
 	queue* q = (queue*)operator new (sizeof(queue));
-	
+
 	q->head = 0;
 	q->tail = 0;
 	q->maxSize = maxSize + 1;
 	unsigned int charArrSize = q->maxSize * MAX_ELEMENT_SIZE;
-	
+
 	q->msgsElements.textMsg = new char[charArrSize];
 	memset(q->msgsElements.textMsg, 0, charArrSize);
 	q->msgsElements.severityMsg = new LOGGER_RT_SEVERITY[charArrSize];
 	q->msgsElements.cycle = new uint32_t[charArrSize];
-	
+
 	return q;
 }
 
@@ -100,11 +77,11 @@ char* LoggerMgr::Dequeue(LoggerMgr::queue* q)
 
 unsigned int LoggerMgr::CountQ(LoggerMgr::queue* q)
 {
-	if (q->head <= q->tail) 
+	if (q->head <= q->tail)
 	{
 		return q->tail - q->head;
 	}
-	else 
+	else
 	{
 		return q->maxSize - (q->head - q->tail);
 	}
@@ -131,7 +108,7 @@ void LoggerMgr::SendToLoggerDisplay(data_Send_To_UI* msg)
 	dataToSend.cycle = *msg->elementMsg.cycle;
 
 	strncpy(dataToSend.textMsg, msg->elementMsg.textMsg, strlen(msg->elementMsg.textMsg));
-	
+
 	s->send((char*)&dataToSend, sizeof(dataToSend));
 }
 
@@ -154,12 +131,10 @@ void LoggerMgr::StartProcess()
 	for (int i = 0; i < LOGGER_RT_NUM_OF_SERVICES; i++)
 		counterMsg[i] = 0;
 
-	while (true)
+	while (true) //Main loop cycle 60Hz
 	{
-		StartCounter();
-		//printf("Starting Timed Test\n");
-		double start = GetCounter();
-		
+		auto start = std::chrono::high_resolution_clock::now();
+
 		for (int i = 0; i < LOGGER_RT_NUM_OF_SERVICES; i++)
 		{
 			if (counterMsg[i] <= MAX_MSG_TO_SEND) //counter msgs until MAX_MSG_TO_SEND each service
@@ -167,7 +142,7 @@ void LoggerMgr::StartProcess()
 				if (CountQ(m_stArrLoggerRTData[i].queueMsgs) >= 0)
 				{
 					for (int j = 0; j < CountQ(m_stArrLoggerRTData[i].queueMsgs); j++)
-					{	
+					{
 						char* msg =
 							&m_stArrLoggerRTData[i].queueMsgs->msgsElements.textMsg[m_stArrLoggerRTData[i].queueMsgs->head * MAX_ELEMENT_SIZE];
 						LOGGER_RT_SEVERITY severity =
@@ -196,27 +171,29 @@ void LoggerMgr::StartProcess()
 						printf("\nDequeue: %s, severity: %s\n", stElement.textMsg, LOGGER_RT_SEVERITY_STR[*stDataSend.elementMsg.severityMsg]);
 						printf("\nDequeue: %s, service: %s\n", stElement.textMsg, LOGGER_RT_SERVICE_STR[stDataSend.serviceMsg]);
 						printf("\nDequeue: %s, cycle: %d\n", stElement.textMsg, *stDataSend.elementMsg.cycle);
-					
+
 					}
 				}
 			}
 		}
 
-		double endLoopAction = GetCounter();
-		double DeltaTime = endLoopAction - start;
-		/*printf("  ::: DeltaTime availableKeywords(): %3.7f ms, %3.3f sec, %3.3f min\n", DeltaTime,
-			DeltaTime / 1000.0, DeltaTime / 1000.0 / 60.0);*/
-		
+		auto endLoop = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double, std::milli> deltaTime = endLoop - start;
+		auto intEndLoop_ms = std::chrono::duration_cast<std::chrono::milliseconds>(endLoop - start);
+		//std::cout << "deltaTime: " << deltaTime.count() << " ms, " << std::endl;
+
 #ifdef WIN32
-		Sleep(MILLISECONDS_TO_60_HZ- DeltaTime);
+		Sleep(MILLISECONDS_TO_60_HZ - ((double)deltaTime.count()));
+
 #else 
-		sleep(SECONDS_TO_60_HZ- (DeltaTime / 1000.0));
+		usleep(MICROSECONDS_TO_60_HZ - ((double)deltaTime.count() * 1000));
+
 #endif
-	
-		/*double end = GetCounter();
-		double elapsed = end - start;
-		printf("  ::: Elapsed availableKeywords(): %3.7f ms, %3.3f sec, %3.3f min\n", elapsed,
-			elapsed / 1000.0, elapsed / 1000.0 / 60.0);*/
+		auto end = std::chrono::high_resolution_clock::now();
+		std::chrono::duration<double, std::milli> elapsed = end - start;
+		auto intEnd_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
+		//std::cout << "elapsed:  " << elapsed.count() << " ms, " << std::endl;
+
 	}
 }
 

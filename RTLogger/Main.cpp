@@ -35,7 +35,7 @@ int main()
 		#ifdef WIN32
 			Sleep(0.001);
 		#else 
-			sleep(0.000001);
+			usleep(1);
 		#endif
 	}
 	return 0;

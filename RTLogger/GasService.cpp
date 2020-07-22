@@ -17,11 +17,10 @@ void GasService::StartJob()
 		log->SendLoggerRTInfo("Gas service enable to start!");
 		log->SendLoggerRTDebug("Gas service enable to start!");
 		
-
 #ifdef WIN32
 		Sleep(2000);
 #else 
-		sleep(2);
+		usleep(2000000);
 #endif
 	}
 }

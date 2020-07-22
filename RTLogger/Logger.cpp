@@ -169,31 +169,30 @@ void Logger::PrintfFormat(const char* msg, char* buffer, char* arrBuffer, va_lis
 
 		switch (*traverse)
 		{
-		case 'c': i = va_arg(arg, int); //Fetch char argument
+		case 'c': i = va_arg(arg, int); //char
 			sprintf(buffer, "%c", i);
 			break;
 
-		case 'd': i = va_arg(arg, int); //Fetch Decimal/Integer argument
+		case 'd': i = va_arg(arg, int); //Decimal/Integer
 			sprintf(buffer, "%i", i);
 			break;
 
 		case 'f':
 		{
-			f = va_arg(arg, double);		//Fetch Float argument 
+			f = va_arg(arg, double); //Float
 			char str[100];
 			const char* tmpSign = ((f) < 0) ? "-" : "";
 			float tmpVal = (f < 0) ? -f : f;
 
-			int tmpInt1 = tmpVal;                  // Get the integer (678).
-			float tmpFrac = tmpVal - tmpInt1;      // Get fraction (0.0123).
-			//int tmpInt2 = trunc(tmpFrac * 10000);  // Turn into integer (123).
+			int tmpInt1 = tmpVal;                  
+			float tmpFrac = tmpVal - tmpInt1;      
 			int tmpInt2 = tmpFrac * 10000;
 
 			sprintf(buffer, "%s%d.%04d", tmpSign, tmpInt1, tmpInt2);
 		}
 		break;
 
-		case 's': s = va_arg(arg, char*); //Fetch string
+		case 's': s = va_arg(arg, char*); //string
 			sprintf(buffer, "%s", s);
 			break;
 		}

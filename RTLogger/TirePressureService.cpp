@@ -20,10 +20,9 @@ void TirePressureService::StartJob()
 #ifdef WIN32
 		Sleep(2000);
 #else 
-		sleep(2);
+		usleep(2000000);
 #endif
-	}
-		
+	}	
 }
 
 TirePressureService* TirePressureService::GetInstance()
